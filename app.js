@@ -9,11 +9,38 @@ const update = (id, fn) => { const d = load(); const s = d.surveys.find(x => x.i
 const go = h => { location.hash = h; };
 const link = id => location.origin + location.pathname + '#/s/' + id;
 
+// Dán Client ID của bạn vào giữa hai dấu nháy để bật đăng nhập Google thật (xem README).
+// Để trống thì Google sẽ chạy bằng màn hình chọn tài khoản mô phỏng.
+const GOOGLE_CLIENT_ID = '';
+const pic = () => localStorage.getItem('ms_pic');
+function loadGsi() {
+  if (!GOOGLE_CLIENT_ID || document.getElementById('gsi')) return;
+  const sc = document.createElement('script'); sc.id = 'gsi'; sc.src = 'https://accounts.google.com/gsi/client'; sc.async = true; document.head.appendChild(sc);
+}
+function googleSignIn(onDone) {
+  const t = L[lang()], err = m => { const e = document.getElementById('e'); if (e) e.textContent = m; };
+  if (!window.google || !google.accounts || !google.accounts.oauth2) return err(t.gLoad);
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID, scope: 'openid email profile',
+    callback: async r => {
+      if (r.error || !r.access_token) return err(t.gFail);
+      try {
+        const u = await (await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + r.access_token } })).json();
+        localStorage.setItem('ms_user', u.name || u.email); localStorage.setItem('ms_email', u.email || '');
+        if (u.picture) localStorage.setItem('ms_pic', u.picture); else localStorage.removeItem('ms_pic');
+        onDone();
+      } catch { err(t.gFail); }
+    },
+    error_callback: () => err(t.gFail)
+  });
+  client.requestAccessToken();
+}
 const LK = 'ms_lang';
 const lang = () => (localStorage.getItem(LK) === 'en' ? 'en' : 'vi');
 let uc = 0;
 const L = {
 vi: {
+  gLoad: 'Chưa tải được Google. Hãy kiểm tra mạng hoặc tắt trình chặn quảng cáo rồi thử lại.', gFail: 'Đăng nhập Google chưa thành công. Hãy thử lại.',
   tabHome: 'Trang chủ', tabMulti: 'Phân tích đa khảo sát', upg: 'Nâng cấp', mk: 'Tạo khảo sát', upgNote: 'Bản demo: chưa có gói trả phí.',
   sdFor: 'Được tạo cho bạn', sdSur: 'Khảo sát', sdFold: 'Thư mục', sdHint: 'Tạo một thư mục để sắp xếp các khảo sát của bạn.', folderQ: 'Tên thư mục mới',
   hFor: 'Các cuộc khảo sát được thiết kế dành riêng cho bạn', hH: 'Bắt đầu chỉ trong vài phút với các khảo sát về mức độ gắn kết của nhân viên.',
@@ -74,6 +101,7 @@ vi: {
   note: 'Nội dung, số liệu, đánh giá và nhân vật trên trang này là hư cấu, chỉ để minh họa.'
 },
 en: {
+  gLoad: 'Google could not be loaded. Check your connection or turn off your ad blocker and try again.', gFail: 'Google sign-in did not complete. Please try again.',
   tabHome: 'Home', tabMulti: 'Multi-survey analysis', upg: 'Upgrade', mk: 'Create survey', upgNote: 'Demo only: there are no paid plans yet.',
   sdFor: 'Made for you', sdSur: 'Surveys', sdFold: 'Folders', sdHint: 'Create a folder to organize your surveys.', folderQ: 'New folder name',
   hFor: 'Surveys designed just for you', hH: 'Get started in minutes with employee engagement surveys.',
@@ -172,7 +200,7 @@ const help = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke
 const nav = (act) => { const t = L[lang()]; return `<header class="ab"><b class="logo" data-a="home"><i></i>MiniSurvey</b>
   <a class="tn ${act === 'home' || act === 'surveys' ? 'on' : ''}" href="javascript:void(0)" data-a="home">${t.tabHome}</a><a class="tn ${act === 'multi' ? 'on' : ''}" href="javascript:void(0)" data-a="multi">${t.tabMulti}</a>
   <div class="ar">${langSel()}<button class="gold" data-a="upgrade">${t.upg}</button><button class="ol2" data-a="surveys">${t.mk}</button><span class="ib2">${bell}</span><span class="ib2">${help}</span>
-  <div class="dd r"><span class="avt" tabindex="0">${esc(ini())}</span><div class="dm2"><button data-a="logout">${t.logoutB}</button></div></div></div></header>`; };
+  <div class="dd r"><span class="avt" tabindex="0">${pic() ? `<img src="${esc(pic())}" alt="" referrerpolicy="no-referrer">` : esc(ini())}</span><div class="dm2">${localStorage.getItem('ms_email') ? `<div class="m" style="margin:.3rem .8rem">${esc(localStorage.getItem('ms_email'))}</div>` : ''}<button data-a="logout">${t.logoutB}</button></div></div></div></header>`; };
 const steps = (n, id) => `<div class="steps">${['Thiết kế', 'Đăng khảo sát', 'Phân tích kết quả'].map((t, i) =>
   `<span class="${i === n ? 'on' : ''}">${i + 1}. ${t}</span>`).join('')}</div>`;
 
@@ -230,7 +258,7 @@ function consent(k) {
   return shell(langSel(), `<main class="ac cs"><h1>${t.cTitle} ${k === 'apple' ? 'Apple' : 'Google'}</h1><p>${t.cSub}</p>
   <label class="cb"><input type="checkbox" id="c1"><span>${t.c1} <span class="ln">${t.tos}</span> ${t.and} <span class="ln">${t.priv}</span>.</span></label>
   <label class="cb"><input type="checkbox"><span>${t.c2}</span></label>
-  <button class="bt" id="cn" data-a="consent" data-k="${k}" disabled>${t.next}</button></main>`);
+  <div id="e" class="err" role="alert"></div><button class="bt" id="cn" data-a="consent" data-k="${k}" disabled>${t.next}</button></main>`);
 }
 function onboard(step) {
   const t = L[lang()];
@@ -372,7 +400,7 @@ app.addEventListener('click', e => {
   if (a === 'home') go('/home');
   if (a === 'loginpage') go('/login');
   if (a === 'nav') go(b.dataset.h);
-  if (a === 'logout') { localStorage.removeItem('ms_user'); go('/'); render(); }
+  if (a === 'logout') { ['ms_user', 'ms_pic', 'ms_email'].forEach(k => localStorage.removeItem(k)); go('/'); render(); }
   if (a === 'tpl') add(make(b.dataset.k));
   if (a === 'idea') {
     const v = document.getElementById('idea').value.trim(), l = v.toLowerCase();
@@ -393,8 +421,13 @@ app.addEventListener('click', e => {
     if (!/^\S+@\S+\.\S+$/.test(v)) return document.getElementById('e').textContent = L[lang()].emailBad;
     localStorage.setItem('ms_user', v); go(b.dataset.m === 'signup' ? '/onboard/1' : '/home'); render();
   }
-  if (a === 'social') go('/oauth/' + b.dataset.k + '-' + b.dataset.m);
-  if (a === 'consent') go('/onboard/1');
+  if (a === 'social') {
+    const real = b.dataset.k === 'google' && GOOGLE_CLIENT_ID;
+    if (real && b.dataset.m === 'signup') go('/consent/google');
+    else if (real) googleSignIn(() => { go('/home'); render(); });
+    else go('/oauth/' + b.dataset.k + '-' + b.dataset.m);
+  }
+  if (a === 'consent') { if (b.dataset.k === 'google' && GOOGLE_CLIENT_ID) googleSignIn(() => { go('/onboard/1'); render(); }); else go('/onboard/1'); }
   if (a === 'pick') { localStorage.setItem('ms_purpose', b.dataset.p); go('/onboard/2'); }
   if (a === 'back') go('/onboard/1');
   if (a === 'explore') go('/home');
@@ -409,7 +442,7 @@ app.addEventListener('click', e => {
   if (a === 'pickacct' || a === 'otherGo') {
     let name = b.dataset.n;
     if (a === 'otherGo') { const v = document.getElementById('oe').value.trim(); if (!/^\S+@\S+\.\S+$/.test(v)) return document.getElementById('e').textContent = L[lang()].emailBad; name = v; }
-    localStorage.setItem('ms_user', name); go(b.dataset.m === 'signup' ? '/consent/' + b.dataset.k : '/home'); render();
+    localStorage.removeItem('ms_pic'); localStorage.removeItem('ms_email'); localStorage.setItem('ms_user', name); go(b.dataset.m === 'signup' ? '/consent/' + b.dataset.k : '/home'); render();
   }
   if (a === 'sc') document.getElementById(b.dataset.t)?.scrollIntoView({ behavior: 'smooth' });
   if (a === 'tab') { tab = b.dataset.t; render(); }
@@ -420,4 +453,5 @@ app.addEventListener('click', e => {
     Object.assign(document.createElement('a'), { href: u, download: s.title + '.csv' }).click();
   }
 });
+loadGsi();
 render();
