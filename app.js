@@ -14,60 +14,74 @@ const lang = () => (localStorage.getItem(LK) === 'en' ? 'en' : 'vi');
 let uc = 0;
 const L = {
 vi: {
-  login: 'Đăng nhập', logout: 'Đăng xuất', start: 'Bắt đầu miễn phí', need: 'Nhập tên để tiếp tục.',
-  loginSub: 'Bản demo: chỉ cần nhập tên, dữ liệu lưu trong trình duyệt của bạn.', namePh: 'Tên của bạn', enter: 'Vào Home',
-  menu: [['uc', 'Giải pháp'], ['ins', 'Tài nguyên'], ['tst', 'Đánh giá']],
-  h1: 'Hỏi đúng câu hỏi. Nghe đúng điều mọi người nghĩ.',
-  sub: 'Tạo khảo sát trong vài phút, gửi bằng một đường link và xem kết quả ngay. Dành cho đội nhóm, lớp học, cửa hàng và dự án của bạn.',
+  login: 'Đăng nhập', logout: 'Đăng xuất', signup: 'Đăng ký miễn phí', start: 'Bắt đầu miễn phí', toHome: 'Vào Home', demoBtn: 'Xem demo',
+  need: 'Nhập tên để tiếp tục.', loginSub: 'Bản demo: chỉ cần nhập tên, dữ liệu lưu trong trình duyệt của bạn.', namePh: 'Tên của bạn', enter: 'Vào Home',
+  mProd: 'Sản phẩm', mSol: 'Giải pháp', mRes: 'Tài nguyên',
+  pm: [['Tạo khảo sát', 'fin'], ['Mẫu có sẵn', 'uc'], ['Phân tích kết quả', 'hero']],
+  rm: [['Bài viết mới', 'ins'], ['Câu chuyện khách hàng', 'sto'], ['Cam kết dùng AI', 'ai']],
+  h1: 'Con người vẫn quan trọng. Hãy lắng nghe họ.',
+  sub: 'Hiểu nhu cầu luôn thay đổi của nhân viên, khách hàng, người tham dự và người mua bằng phản hồi liên tục.',
+  addT: 'Thêm khảo sát', addS: 'Chọn khảo sát để thêm vào chương trình, hoặc tạo mới từ đầu.', addPh: 'Chọn hoặc tìm khảo sát...',
+  addL: ['Khảo sát trải nghiệm khách hàng', 'Khảo sát mức độ giới thiệu', 'Khảo sát nhịp đập văn hóa'],
   demoT: 'Chương trình gắn kết nhân viên', demoM: [['Điểm gắn kết', '47'], ['Hài lòng', '82%'], ['Thuộc về', '73%']],
-  demoC: 'Gắn kết theo quý', demoTip: 'Ghi nhận tốt giúp gắn kết tăng',
+  demoC: 'Gắn kết theo quý', demoTip: 'Ghi nhận tốt giúp gắn kết tăng', rep: 'Sổ tay khảo sát 2027', repB: 'Đọc báo cáo',
   statT: 'Một công cụ khảo sát đơn giản, nhiều nhóm tin dùng',
   stats: [['10 triệu+', 'câu hỏi đã gửi'], ['500 nghìn+', 'người dùng'], ['20 nghìn+', 'lượt đánh giá']],
-  ucT: 'Một nền tảng cho nhiều nhu cầu',
+  ucT: 'Hỗ trợ quyết định thông minh hơn cho mọi bộ phận',
   ucs: [
-    ['Phản hồi nhân viên', 'Hiểu đội ngũ của bạn', 'Đo mức gắn kết, hài lòng và cảm giác thuộc về để giữ chân người giỏi.', ['Khảo sát gắn kết theo quý', 'Phát hiện quá tải sớm', 'Theo dõi xu hướng theo thời gian']],
-    ['Phản hồi khách hàng', 'Nghe khách nói thật', 'Biết khách hài lòng ở đâu và chưa hài lòng ở đâu sau mỗi lần mua hàng.', ['Mẫu khảo sát hài lòng', 'Hỏi mức độ giới thiệu', 'Gom góp ý bằng câu trả lời mở']],
-    ['Nghiên cứu thị trường', 'Kiểm chứng ý tưởng', 'Thu thập ý kiến của nhóm đối tượng trước khi bạn đầu tư thời gian và tiền bạc.', ['Câu hỏi chọn một, chọn nhiều', 'So sánh các lựa chọn', 'Xuất CSV để phân tích sâu']],
-    ['Phát triển sản phẩm', 'Làm đúng thứ người dùng cần', 'Hỏi người dùng tính năng nào quan trọng nhất và điều gì đang gây khó chịu.', ['Xếp thứ tự ưu tiên tính năng', 'Thu thập lỗi gặp phải', 'Lặp lại khảo sát sau mỗi bản cập nhật']],
-    ['Quản lý sự kiện', 'Biết người tham dự nghĩ gì', 'Gửi một đường link cho người đến dự và nhận phản hồi ngay khi sự kiện kết thúc.', ['Mẫu đăng ký tham dự', 'Đánh giá sau sự kiện', 'Xem kết quả theo thời gian thực']],
-    ['Biểu mẫu trực tuyến', 'Thu thập thông tin gọn gàng', 'Dùng như biểu mẫu đăng ký, bình chọn hoặc bài kiểm tra nhanh trong lớp.', ['Tạo trong vài phút', 'Chia sẻ bằng một link', 'Mỗi phản hồi được ghi lại tự động']]
+    ['Phản hồi nhân viên', 'Xây dựng đội ngũ hiệu suất cao', 'Thường xuyên hỏi thăm để hiểu đội nhóm cần gì, giúp họ gắn bó và làm việc tốt hơn.', ['Giữ nhân viên có động lực và gắn bó', 'Thiết kế chương trình đào tạo có giá trị', 'Xây dựng văn hóa nơi ai cũng thuộc về'], ['Gắn kết', '83%']],
+    ['Phản hồi khách hàng', 'Nghe khách nói thật', 'Biết khách hài lòng ở đâu và chưa hài lòng ở đâu sau mỗi lần mua hàng.', ['Mẫu khảo sát hài lòng', 'Hỏi mức độ sẵn sàng giới thiệu', 'Gom góp ý bằng câu trả lời mở'], ['Hài lòng', '91%']],
+    ['Nghiên cứu thị trường', 'Kiểm chứng ý tưởng sớm', 'Thu thập ý kiến của nhóm đối tượng trước khi bạn đầu tư thời gian và tiền bạc.', ['Câu hỏi chọn một, chọn nhiều', 'So sánh các lựa chọn cạnh nhau', 'Xuất CSV để phân tích sâu'], ['Chọn phương án A', '64%']],
+    ['Phát triển sản phẩm', 'Làm đúng thứ người dùng cần', 'Hỏi người dùng tính năng nào quan trọng nhất và điều gì đang gây khó chịu.', ['Xếp thứ tự ưu tiên tính năng', 'Thu thập lỗi người dùng gặp', 'Lặp lại khảo sát sau mỗi bản cập nhật'], ['Cần tính năng mới', '72%']],
+    ['Quản lý sự kiện', 'Biết người tham dự nghĩ gì', 'Gửi một đường link cho người đến dự và nhận phản hồi ngay khi sự kiện kết thúc.', ['Mẫu đăng ký tham dự', 'Đánh giá sau sự kiện', 'Xem kết quả theo thời gian thực'], ['Điểm sự kiện', '4,6/5']],
+    ['Biểu mẫu trực tuyến', 'Thu thập thông tin gọn gàng', 'Dùng như biểu mẫu đăng ký, bình chọn hoặc bài kiểm tra nhanh trong lớp.', ['Tạo trong vài phút', 'Chia sẻ bằng một link', 'Mỗi phản hồi được ghi lại tự động'], ['Hoàn thành', '88%']]
   ],
-  insT: 'Những bài viết giúp bạn hỏi tốt hơn',
+  solMore: 'Xem tất cả giải pháp', solSub: 'Biến phản hồi thành hành động',
+  insL: 'Mới', insT: 'Những bài viết giúp bạn hỏi tốt hơn', insB: 'Khám phá',
   ins: [['Viết câu hỏi để nhận câu trả lời thật', 'Mẹo tránh câu hỏi dẫn dắt và câu hỏi quá dài.'], ['Đọc kết quả trong 5 phút', 'Cách nhìn biểu đồ và rút ra việc cần làm.'], ['Mẫu cho khảo sát đầu tiên', 'Chọn mẫu phù hợp rồi chỉnh theo ý bạn.'], ['Làm sao để nhiều người trả lời hơn', 'Độ dài, thời điểm gửi và lời mời ngắn gọn.']],
-  tstT: 'Người dùng nói gì',
-  tst: [['Chúng tôi thu được phản hồi của cả đội chỉ trong một buổi chiều. Biểu đồ rõ ràng nên cuộc họp sau đó rất ngắn.', 'Trưởng nhóm vận hành'], ['Học sinh trả lời nhanh hơn hẳn so với phiếu giấy, và tôi xuất bảng điểm khảo sát ngay trong giờ nghỉ.', 'Giáo viên chủ nhiệm'], ['Khách để lại góp ý nhiều hơn vì chỉ cần mở một đường link và bấm vài lần.', 'Chủ cửa hàng nhỏ']],
-  trustT: 'Dữ liệu của bạn là của bạn', trust: 'Bản học tập này lưu mọi thứ ngay trong trình duyệt của bạn, không gửi đi đâu khác. Phần gợi ý câu hỏi chỉ là mô phỏng, không gọi AI thật.',
-  finT: 'Sẵn sàng hỏi câu hỏi đầu tiên?', finS: 'Tạo khảo sát miễn phí, không cần thẻ.',
+  stoT: 'Câu chuyện khách hàng', read: 'Đọc câu chuyện',
+  sto: [['Đội chăm sóc khách hàng tăng điểm giới thiệu thêm 15 điểm chỉ sau vài tháng', 'Khảo sát cho chúng tôi thấy nhận thức của khách quan trọng thế nào, và chỉ ra chính xác chỗ cần cải thiện để dịch vụ tốt hơn.', 'Quản lý phân tích khách hàng'], ['Nhóm nghiên cứu biến khảo sát thị trường thành sản phẩm thắng thế', 'Khi làm nghiên cứu ở quy mô lớn, vấn đề không chỉ là cỡ mẫu mà là kiểm soát độ phức tạp mà vẫn giữ được chất lượng. Công cụ này giúp chúng tôi làm được cả hai.', 'Quản lý sản phẩm']],
+  aiT: 'Cam kết của chúng tôi về việc dùng AI có trách nhiệm',
+  ai: ['AI rất giỏi giúp người ta tìm ra quy luật và làm việc nhanh hơn. Nhưng AI không thể cho biết vì sao khách hàng hay nhân viên thất vọng, hào hứng hay sẵn sàng thay đổi. Những câu trả lời đó đến từ con người.', 'Chúng tôi dùng AI để quá trình thu thập phản hồi nhanh và dễ hiểu hơn, đồng thời giữ vững sự tin cậy, quyền riêng tư và góc nhìn thực tế của con người.'],
+  aiRole: 'Giám đốc sản phẩm', aiB: 'Xem trung tâm tin cậy', aiV: 'Chủ đề cần cải thiện nhiều nhất',
+  rewT: 'Chia sẻ ý kiến. Nhận quà.', rewS: 'Giúp định hình sản phẩm và dịch vụ bằng cách làm khảo sát. Nhận tiền mặt hoặc quyên góp phần thưởng cho từ thiện.', rewB1: 'Bắt đầu nhận quà', rewB2: 'Hoặc tạo khảo sát miễn phí',
   foot: [['Sản phẩm', ['Tạo khảo sát', 'Mẫu có sẵn', 'Phân tích kết quả', 'Xuất CSV']], ['Mẫu phổ biến', ['Gắn kết nhân viên', 'Hài lòng khách hàng', 'Đăng ký sự kiện']], ['Tài nguyên', ['Hướng dẫn', 'Bài viết', 'Câu hỏi thường gặp']], ['Giới thiệu', ['Về dự án', 'Liên hệ', 'Quyền riêng tư']]],
-  note: 'Nội dung, số liệu và đánh giá trên trang này là hư cấu, chỉ để minh họa.'
+  note: 'Nội dung, số liệu, đánh giá và nhân vật trên trang này là hư cấu, chỉ để minh họa.'
 },
 en: {
-  login: 'Log in', logout: 'Log out', start: 'Start for free', need: 'Enter your name to continue.',
-  loginSub: 'Demo only: just enter a name. Data stays in your own browser.', namePh: 'Your name', enter: 'Go to Home',
-  menu: [['uc', 'Solutions'], ['ins', 'Resources'], ['tst', 'Reviews']],
-  h1: 'Ask better questions. Hear what people really think.',
-  sub: 'Build a survey in minutes, share it with one link and see results right away. Made for teams, classrooms, shops and side projects.',
+  login: 'Log in', logout: 'Log out', signup: 'Sign up free', start: 'Get started free', toHome: 'Go to Home', demoBtn: 'Watch the demo',
+  need: 'Enter your name to continue.', loginSub: 'Demo only: just enter a name. Data stays in your own browser.', namePh: 'Your name', enter: 'Go to Home',
+  mProd: 'Products', mSol: 'Solutions', mRes: 'Resources',
+  pm: [['Create a survey', 'fin'], ['Templates', 'uc'], ['Analyze results', 'hero']],
+  rm: [['Latest reads', 'ins'], ['Customer stories', 'sto'], ['Our approach to AI', 'ai']],
+  h1: 'Humans still matter. Listen to them.',
+  sub: 'Understand the changing needs of your employees, customers, attendees and buyers with continuous feedback.',
+  addT: 'Add surveys', addS: 'Select surveys to add to this program, or create a new one from scratch.', addPh: 'Select or search for surveys...',
+  addL: ['Customer experience survey', 'Likelihood-to-recommend survey', 'Culture pulse survey'],
   demoT: 'Employee engagement program', demoM: [['Engagement score', '47'], ['Satisfaction', '82%'], ['Belonging', '73%']],
-  demoC: 'Engagement by quarter', demoTip: 'Better recognition lifted engagement',
+  demoC: 'Engagement by quarter', demoTip: 'Better recognition lifted engagement', rep: 'The 2027 survey handbook', repB: 'Read the report',
   statT: 'A simple survey tool that many teams rely on',
   stats: [['10M+', 'questions sent'], ['500K+', 'users'], ['20K+', 'reviews']],
-  ucT: 'One platform, many needs',
+  ucT: 'Powering smarter decisions across your business',
   ucs: [
-    ['Employee feedback', 'Understand your team', 'Measure engagement, satisfaction and belonging so you can keep your best people.', ['Quarterly engagement surveys', 'Spot overload early', 'Track trends over time']],
-    ['Customer feedback', 'Hear the honest truth', 'Learn where customers are happy and where they are not after every purchase.', ['Satisfaction templates', 'Ask how likely they are to recommend', 'Collect comments with open questions']],
-    ['Market research', 'Test your ideas', 'Gather opinions from your target group before you spend time and money.', ['Single and multiple choice questions', 'Compare options side by side', 'Export CSV for deeper analysis']],
-    ['Product development', 'Build what users need', 'Ask which features matter most and what is getting in the way.', ['Rank feature priorities', 'Collect problems people hit', 'Repeat the survey after each update']],
-    ['Event planning', 'Know what guests think', 'Send one link to attendees and get feedback the moment the event ends.', ['Registration templates', 'Post-event ratings', 'Live results']],
-    ['Online forms', 'Collect info neatly', 'Use it as a sign-up form, a poll or a quick classroom quiz.', ['Build in minutes', 'Share with one link', 'Every response is saved automatically']]
+    ['Employee feedback', 'Build a high performing team', 'Check in regularly to understand what your team needs to stay engaged, perform at their best and stick around longer.', ['Keep employees motivated and engaged', 'Create learning programs people value', 'Foster a culture where everyone belongs'], ['Engagement', '83%']],
+    ['Customer feedback', 'Hear the honest truth', 'Learn where customers are happy and where they are not after every purchase.', ['Satisfaction templates', 'Ask how likely they are to recommend', 'Collect comments with open questions'], ['Satisfaction', '91%']],
+    ['Market research', 'Test your ideas early', 'Gather opinions from your target group before you spend time and money.', ['Single and multiple choice questions', 'Compare options side by side', 'Export CSV for deeper analysis'], ['Chose option A', '64%']],
+    ['Product development', 'Build what users need', 'Ask which features matter most and what is getting in the way.', ['Rank feature priorities', 'Collect problems people hit', 'Repeat the survey after each update'], ['Want new feature', '72%']],
+    ['Event management', 'Know what guests think', 'Send one link to attendees and get feedback the moment the event ends.', ['Registration templates', 'Post-event ratings', 'Live results'], ['Event score', '4.6/5']],
+    ['Online forms', 'Collect info neatly', 'Use it as a sign-up form, a poll or a quick classroom quiz.', ['Build in minutes', 'Share with one link', 'Every response is saved automatically'], ['Completed', '88%']]
   ],
-  insT: 'Reads that help you ask better',
+  solMore: 'See all solutions', solSub: 'Turn feedback into action',
+  insL: 'What’s new', insT: 'Insights to fuel your curiosity', insB: 'Explore',
   ins: [['Write questions that get honest answers', 'Tips to avoid leading and overly long questions.'], ['Read your results in 5 minutes', 'How to scan the charts and decide what to do next.'], ['Templates for your first survey', 'Pick a template, then make it your own.'], ['How to get more people to respond', 'Length, timing and a short invitation.']],
-  tstT: 'What people say',
-  tst: [['We got feedback from the whole team in one afternoon. The charts were clear, so the follow-up meeting was short.', 'Operations lead'], ['Students answer much faster than on paper, and I export the results during the break.', 'Homeroom teacher'], ['Customers leave more comments because it only takes one link and a few taps.', 'Small shop owner']],
-  trustT: 'Your data is yours', trust: 'This learning project keeps everything in your own browser and sends nothing elsewhere. The idea-to-survey feature is a simulation, not a real AI call.',
-  finT: 'Ready to ask your first question?', finS: 'Create a survey for free, no card needed.',
+  stoT: 'Customer stories', read: 'Read the story',
+  sto: [['A support team raised its recommend score by 15 points within months', 'The survey showed us how much customer perception matters, and pinpointed exactly where we could improve our service.', 'Customer analytics manager'], ['A research team turned market research into a winning product', 'At this scale, it is not only about sample size. It is about managing complexity without sacrificing quality. This tool let us do both.', 'Product manager']],
+  aiT: 'Our commitment to using AI responsibly',
+  ai: ['AI is great at helping people find patterns and move faster. But it cannot tell you why customers or employees are frustrated, excited or ready for change. Those answers come from people.', 'We use AI to make collecting feedback faster and easier to understand, while keeping trust, privacy and real human perspectives at the center.'],
+  aiRole: 'Chief product officer', aiB: 'Visit our trust center', aiV: 'Top improvement themes',
+  rewT: 'Share your opinion. Earn rewards.', rewS: 'Help shape products and services by taking surveys. Earn cash or donate your rewards to charity.', rewB1: 'Start earning rewards', rewB2: 'Or, create a survey for free',
   foot: [['Product', ['Create a survey', 'Templates', 'Analyze results', 'Export CSV']], ['Popular templates', ['Employee engagement', 'Customer satisfaction', 'Event sign-up']], ['Resources', ['Guides', 'Articles', 'FAQ']], ['About', ['About the project', 'Contact', 'Privacy']]],
-  note: 'Content, numbers and reviews on this page are fictional and for illustration only.'
+  note: 'Content, numbers, reviews and people on this page are fictional and for illustration only.'
 }};
 
 const TPL = {
@@ -88,26 +102,36 @@ function make(key, title) {
 }
 function add(s) { const d = load(); d.surveys.unshift(s); save(d); go('/edit/' + s.id); }
 
-const nav = () => { const t = L[lang()]; return `<nav><b data-a="home">MiniSurvey</b><select id="lang" aria-label="Language"><option value="vi"${lang() === 'vi' ? ' selected' : ''}>Tiếng Việt</option><option value="en"${lang() === 'en' ? ' selected' : ''}>English</option></select>${user() ? `<span class="m">${esc(user())}</span><button class="g" data-a="logout">${t.logout}</button>` : `<button data-a="loginpage">${t.login}</button>`}</nav>`; };
+const globe = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>';
+const langSel = () => `<label class="gl">${globe}<select id="lang" aria-label="Language"><option value="vi"${lang() === 'vi' ? ' selected' : ''}>Tiếng Việt</option><option value="en"${lang() === 'en' ? ' selected' : ''}>English</option></select></label>`;
+const nav = () => { const t = L[lang()]; return `<nav><b class="logo" data-a="home"><i></i>MiniSurvey</b>${langSel()}${user() ? `<span class="m">${esc(user())}</span><button class="g" data-a="logout">${t.logout}</button>` : `<button data-a="loginpage">${t.login}</button>`}</nav>`; };
 const steps = (n, id) => `<div class="steps">${['Thiết kế', 'Đăng khảo sát', 'Phân tích kết quả'].map((t, i) =>
   `<span class="${i === n ? 'on' : ''}">${i + 1}. ${t}</span>`).join('')}</div>`;
 
 function landing() {
-  const t = L[lang()], u = t.ucs[uc], go1 = user() ? 'home' : 'loginpage';
-  const cta = `<button class="y" data-a="${go1}">${t.start}</button>`;
-  return nav() + `<header class="lh"><div class="lm">${t.menu.map(([k, n]) => `<a href="javascript:void(0)" data-a="sc" data-t="${k}">${n}</a>`).join('')}</div>
-  <h1>${t.h1}</h1><p class="m">${t.sub}</p>${cta}
-  <div class="demo" aria-hidden="true"><div class="dh">${t.demoT}</div>
-  <div class="dm">${t.demoM.map(([n, v]) => `<div><small>${n}</small><b>${v}</b></div>`).join('')}</div>
-  <div class="dc"><small>${t.demoC}</small><svg viewBox="0 0 300 90"><polyline fill="none" stroke="#0e6b4d" stroke-width="3" points="10,60 100,35 190,50 290,18"/><circle cx="290" cy="18" r="5" fill="#0e6b4d"/></svg><span class="tip">${t.demoTip}</span></div></div></header>
-  <section class="ls"><h2>${t.statT}</h2><div class="st">${t.stats.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('')}</div></section>
-  <section class="ls dark" id="uc"><h2>${t.ucT}</h2><div class="tabs">${t.ucs.map((x, i) => `<button class="${i === uc ? 'y' : 'g'}" data-a="uc" data-i="${i}">${x[0]}</button>`).join('')}</div>
-  <div class="ucc"><h3>${u[1]}</h3><p>${u[2]}</p><ul>${u[3].map(p => `<li>${p}</li>`).join('')}</ul></div></section>
-  <section class="ls" id="ins"><h2>${t.insT}</h2><div class="g4">${t.ins.map(([h, p]) => `<div class="card"><h3>${h}</h3><p class="m">${p}</p></div>`).join('')}</div></section>
-  <section class="ls" id="tst"><h2>${t.tstT}</h2><div class="g3">${t.tst.map(([q, r]) => `<figure class="card"><blockquote>“${q}”</blockquote><figcaption class="m">${r}</figcaption></figure>`).join('')}</div></section>
-  <section class="ls"><div class="card"><h2>${t.trustT}</h2><p class="m">${t.trust}</p></div></section>
-  <section class="ls dark fin" id="fin"><h2>${t.finT}</h2><p>${t.finS}</p>${cta}</section>
-  <footer class="ft"><div class="fc">${t.foot.map(([h, ls]) => `<div><b>${h}</b>${ls.map(l => `<span>${l}</span>`).join('')}</div>`).join('')}</div><p class="m">${t.note}</p></footer>`;
+  const t = L[lang()], u = t.ucs[uc], btn = (k, c = '') => `<button class="${c}" data-a="begin">${k}</button>`;
+  const dd = (l, items) => `<div class="dd"><span tabindex="0">${l} ▾</span><div class="dm2">${items}</div></div>`;
+  const top = `<header class="top"><div class="tw"><b class="logo" data-a="home"><i></i>MiniSurvey</b><div class="mn">
+  ${dd(t.mProd, t.pm.map(([n, g]) => `<button data-a="sc" data-t="${g}">${n}</button>`).join(''))}
+  ${dd(t.mSol, t.ucs.map((x, i) => `<button data-a="ucgo" data-i="${i}">${x[0]}</button>`).join(''))}
+  ${dd(t.mRes, t.rm.map(([n, g]) => `<button data-a="sc" data-t="${g}">${n}</button>`).join(''))}</div>
+  <div class="tr">${langSel()}${user() ? `<button class="g" data-a="logout">${t.logout}</button>${btn(t.toHome)}` : `<a class="lk" href="javascript:void(0)" data-a="loginpage">${t.login}</a>${btn(t.signup)}`}</div></div></header>`;
+  const chart = `<svg viewBox="0 0 300 90"><polyline fill="none" stroke="#005BAA" stroke-width="3" points="10,62 100,36 190,50 290,18"/><circle cx="290" cy="18" r="5" fill="#F36F21"/></svg>`;
+  return top + `<section class="hero2" id="hero"><div class="hw"><div class="ht"><h1>${t.h1}</h1><p>${t.sub}</p><div class="row">${btn(t.start)}<button class="g" data-a="sc" data-t="demo">${t.demoBtn}</button></div></div>
+  <div class="demo" id="demo" aria-hidden="true"><div class="dh"><span class="dot"></span><b>${t.demoT}</b></div>
+  <div class="dbody"><div class="pane p1"><b>${t.addT}</b><p>${t.addS}</p><div class="sel">${t.addPh}</div>${t.addL.map(x => `<div class="ck"><i></i>${x}</div>`).join('')}</div>
+  <div class="pane p2"><div class="dm">${t.demoM.map(([n, v]) => `<div><small>${n}</small><b>${v}</b></div>`).join('')}</div><div class="dc"><small>${t.demoC}</small>${chart}<span class="tip">${t.demoTip}</span></div></div></div></div></div>
+  <div class="rep"><span class="ri"></span><div><b>${t.rep}</b><a href="javascript:void(0)">${t.repB} →</a></div></div></section>
+  <section class="stat"><div class="st">${t.stats.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('')}</div></section>
+  <section class="ls dark" id="uc"><h2>${t.ucT}</h2><div class="tabs">${t.ucs.map((x, i) => `<button class="${i === uc ? '' : 'g'}" data-a="uc" data-i="${i}">${x[0]}</button>`).join('')}</div>
+  <div class="ucg"><div><h3>${u[1]}</h3><p>${u[2]}</p><a class="more" href="javascript:void(0)">${t.solMore} →</a></div><div class="mock"><small>${u[4][0]}</small><b>${u[4][1]}</b>${chart}</div></div>
+  <h3 class="sub">${t.solSub}</h3><div class="g3">${u[3].map(x => `<div class="lc"><b>${x}</b></div>`).join('')}</div></section>
+  <section class="ls" id="ins"><small class="eb">${t.insL}</small><h2>${t.insT}</h2><div class="g4">${t.ins.map(([h, p], i) => `<div class="ic"><div class="ih c${i}"></div><div class="ib"><h3>${h}</h3><p class="m">${p}</p><button class="g" data-a="sc" data-t="uc">${t.insB}</button></div></div>`).join('')}</div></section>
+  <section class="ls" id="sto"><h2>${t.stoT}</h2><div class="g2">${t.sto.map(([h, q, r]) => `<figure class="story"><h3>${h}</h3><blockquote>“${q}”</blockquote><figcaption class="m">${r}</figcaption><button class="g" data-a="sc" data-t="fin">${t.read}</button></figure>`).join('')}</div></section>
+  <section class="ls" id="ai"><h2>${t.aiT}</h2><div class="aig"><div class="at">${t.ai.map(x => `<p>${x}</p>`).join('')}<div class="who"><span class="av"></span><b>${t.aiRole}</b></div><button class="g" data-a="sc" data-t="fin">${t.aiB}</button></div>
+  <div class="vid"><div class="vc"><small>${t.aiV}</small><i style="width:90%"></i><i style="width:62%"></i><i style="width:36%"></i></div><span class="play"></span></div></div></section>
+  <section class="rew" id="fin"><h2>${t.rewT}</h2><p>${t.rewS}</p><div class="row" style="justify-content:center">${btn(t.rewB1)}<button class="ol" data-a="begin">${t.rewB2}</button></div></section>
+  <footer class="ft"><div class="fc">${t.foot.map(([h, ls]) => `<div><b>${h}</b>${ls.map(l => `<span>${l}</span>`).join('')}</div>`).join('')}</div><p>${t.note}</p></footer>`;
 }
 function login() {
   const t = L[lang()];
@@ -218,6 +242,8 @@ app.addEventListener('click', e => {
   if (a === 'publish') { update(id, s => s.status = 'open'); go('/publish/' + id); }
   if (a === 'copy') { const i = document.getElementById('lk'); i.select(); navigator.clipboard?.writeText(i.value); b.textContent = 'Đã sao chép'; }
   if (a === 'uc') { const y = scrollY; uc = +b.dataset.i; render(); scrollTo(0, y); }
+  if (a === 'begin') go(user() ? '/home' : '/login');
+  if (a === 'ucgo') { uc = +b.dataset.i; render(); document.getElementById('uc')?.scrollIntoView({ behavior: 'smooth' }); }
   if (a === 'sc') document.getElementById(b.dataset.t)?.scrollIntoView({ behavior: 'smooth' });
   if (a === 'tab') { tab = b.dataset.t; render(); }
   if (a === 'csv') {
