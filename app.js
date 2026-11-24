@@ -5,7 +5,7 @@ const uid = () => Math.random().toString(36).slice(2, 8);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const user = () => localStorage.getItem('ms_user');
 const find = id => load().surveys.find(s => s.id === id);
-const update = (id, fn) => { const d = load(); const s = d.surveys.find(x => x.id === id); if (s) fn(s); save(d); };
+const update = (id, fn) => { const d = load(); const s = d.surveys.find(x => x.id === id); if (s) { fn(s); s.upd = Date.now(); } save(d); };
 const go = h => { location.hash = h; };
 const link = id => location.origin + location.pathname + '#/s/' + id;
 
@@ -185,9 +185,9 @@ const TPL = {
     ['text', 'Điều gì có thể khiến bạn tìm cơ hội khác?', []]]],
   trong: ['Khảo sát mới', [['single', 'Câu hỏi 1', ['Lựa chọn A', 'Lựa chọn B']]]]
 };
-function make(key, title) {
+function make(key, title, desc) {
   const [t, qs] = TPL[key];
-  return { id: uid(), title: title || t, status: 'draft', responses: [],
+  return { id: uid(), title: title || t, desc: desc || '', upd: Date.now(), status: 'draft', responses: [],
     questions: qs.map(([type, text, options]) => ({ id: uid(), type, text, options: [...options] })) };
 }
 function add(s) { const d = load(); d.surveys.unshift(s); save(d); go('/edit/' + s.id); }
@@ -293,18 +293,19 @@ function surveys() {
   const mb = (k, ic, l, a = 'mode') => `<button class="mb ${sm === k && a === 'mode' ? 'on' : ''}" data-a="${a}" data-m="${k}" ${a === 'tpl' ? 'data-k="trong"' : ''}>${svgI(ic)}${l}</button>`;
   const body = sm === 'tpl'
     ? `<div class="tpls">${['nv', 'kh', 'stress', 'incl', 'ret'].map(k => `<button class="op" data-a="tpl" data-k="${k}">${svgI('edu')}${TPL[k][0]}</button>`).join('')}</div>`
-    : `<div class="ibox"><textarea id="idea" placeholder="${t.ideaPh}"></textarea><div class="ifoot"><span class="chip" data-a="focus">💡 ${t.paste}</span><button class="go" data-a="idea" aria-label="${t.start}">→</button></div></div><p class="m ctr">${t.aiNote}</p>`;
+    : `<div class="ibox"><textarea id="idea" placeholder="${t.ideaPh}"></textarea><div class="ifoot"><span class="chip" data-a="focus">💡 ${t.paste}</span><button class="go" data-a="idea" aria-label="${t.start}">→</button></div></div>${sugHtml()}<p class="m ctr">${t.aiNote}</p>`;
   return nav('surveys') + `<div class="app">${side('surveys')}<main class="mc"><h1 class="big c">${t.sH}</h1>
   <div class="modes">${mb('idea', 'pen', t.mIdea)}${mb('tpl', 'edu', t.mTpl)}${mb('scr', 'work', t.mScr, 'tpl')}</div>${body}
   <div class="ill3"><svg viewBox="0 0 220 170" aria-hidden="true"><rect x="20" y="10" width="100" height="100" rx="6" fill="none" stroke="#9aa7b5" stroke-width="3" stroke-dasharray="7 6"/><circle cx="92" cy="64" r="28" fill="#fff" stroke="#1C2A3A" stroke-width="4"/><path d="M104 88l30 40 18-10-22-40z" fill="#DCEBFA" stroke="#1C2A3A" stroke-width="2"/><path d="M118 130h70l-12 24h-52z" fill="#1C2A3A"/></svg><h2>${t.tag1}</h2><p class="m">${t.tag2}</p></div>
-  <h2 class="h2b">${t.myS}</h2><div class="card">${list.length ? list.map(s => `<div class="item"><div><b>${esc(s.title)}</b> <span class="tag ${s.status === 'open' ? '' : 'd'}">${s.status === 'open' ? t.open : t.draft}</span><div class="m">${s.responses.length} ${t.resp}</div></div>
-  <div class="row"><button class="g" data-a="nav" data-h="/edit/${s.id}">${t.edit}</button><button class="g" data-a="nav" data-h="/results/${s.id}">${t.analyze}</button><button class="x" data-a="del" data-id="${s.id}">${t.del}</button></div></div>`).join('') : `<p class="m">${t.emptyS}</p>`}</div></main></div>`;
+  <h2 class="h2b">${t.myS}</h2><div class="row sf"><input type="text" data-flt=".lrow" placeholder="Tìm kiếm" aria-label="Tìm kiếm"><select id="fs" aria-label="Trạng thái"><option value="">Trạng thái: Tất cả</option><option value="open">Trạng thái: Mở</option><option value="draft">Trạng thái: Nháp</option></select><select aria-label="Chủ sở hữu"><option>Chủ sở hữu: Tất cả</option></select><select aria-label="Sắp xếp"><option>Sắp xếp theo: Cập nhật lần cuối</option></select></div>
+  <div class="card">${list.length ? list.map(s => { const o = s.status === 'open'; return `<div class="item lrow" data-st="${s.status}"><div><span class="tag ${o ? '' : 'd'}">${o ? t.open : t.draft}</span> <a class="tt" href="javascript:void(0)" data-a="nav" data-h="/edit/${s.id}">${esc(s.title)}</a>${o ? `<div class="url"><span>${esc(link(s.id))}</span><button class="g" data-a="copylink" data-id="${s.id}">Sao chép URL</button></div>` : ''}<div class="m">Cập nhật: ${dt(s.upd)}</div></div>
+  <div class="row">${o ? `<span class="rbadge">${s.responses.length} ${t.resp}</span><button class="ol3" style="width:auto" data-a="nav" data-h="/results/${s.id}">${t.analyze}</button>` : `<button class="ol3" style="width:auto" data-a="nav" data-h="/publish/${s.id}">Gửi khảo sát</button>`}<details class="mn2"><summary>⋯</summary><div><button data-a="nav" data-h="/classic/${s.id}">${t.edit}</button><button class="x" data-a="del" data-id="${s.id}">${t.del}</button></div></details></div></div>`; }).join('') : `<p class="m">${t.emptyS}</p>`}<p class="m">Hiển thị ${list.length ? '1 - ' + list.length : 0} trong tổng số ${list.length}</p></div></main></div>`;
 }
 function multi() {
   if (!user()) return login();
   const t = L[lang()], list = load().surveys, tot = list.reduce((n, s) => n + s.responses.length, 0);
-  return nav('multi') + `<main class="w"><h1>${t.multiT}</h1><p class="m">${t.multiP}</p><div class="card"><table><tr><th>${t.colS}</th><th>${t.colSt}</th><th>${t.colR}</th></tr>
-  ${list.map(s => `<tr><td>${esc(s.title)}</td><td>${s.status === 'open' ? t.open : t.draft}</td><td>${s.responses.length}</td></tr>`).join('')}<tr><th>${t.total}</th><th></th><th>${tot}</th></tr></table></div></main>`;
+  return nav('multi') + `<main class="w wide"><div class="ready"><div><h1>Kết hợp, so sánh và khám phá các mối liên hệ bằng phân tích đa khảo sát.</h1><p class="m">${t.multiP}</p><ul><li>Phân tích một hoặc nhiều khảo sát cùng lúc.</li><li>Theo dõi số phản hồi của từng khảo sát.</li><li>So sánh nhanh trong một bảng.</li></ul><button data-a="upgrade">Nâng cấp ngay</button></div><div class="card"><table><tr><th>${t.colS}</th><th>${t.colSt}</th><th>${t.colR}</th></tr>
+  ${list.map(s => `<tr><td>${esc(s.title)}</td><td>${s.status === 'open' ? t.open : t.draft}</td><td>${s.responses.length}</td></tr>`).join('')}<tr><th>${t.total}</th><th></th><th>${tot}</th></tr></table></div></div></main>`;
 }
 function oauth(id) {
   const [k, m] = (id || 'google-signup').split('-'), t = L[lang()], nm = k === 'apple' ? 'Apple' : 'Google';
@@ -317,45 +318,99 @@ function oauth(id) {
   <p class="tm" style="text-align:left">${t.oNote}</p></div></div></div>
   <div class="gf">${langSel()}<button class="bk" data-a="${m === 'login' ? 'loginpage' : 'signuppage'}">‹ ${t.oBack}</button></div></div>`;
 }
+const dt = t => new Date(t || Date.now()).toLocaleDateString('vi-VN'), dtm = t => new Date(t).toLocaleString('vi-VN');
+const mmss = n => String(Math.floor((n || 0) / 60)).padStart(2, '0') + ':' + String((n || 0) % 60).padStart(2, '0');
+const PAL = ['#1fc16b', '#4a7fd0', '#f2c230', '#f08a4b', '#3bb4c1', '#9b6fd0'];
+const INTRO = 'Bản khảo sát của bạn đã được soạn thảo xong và sẵn sàng để đăng tải 🎉 Hãy xem lại nội dung, thêm câu hỏi hoặc đăng khảo sát khi bạn thấy ổn.';
+const SUGS = ['Tôi muốn đánh giá tâm trạng chung của công ty hiện tại và tìm hiểu điều gì đang gây căng thẳng cho nhân viên.', 'Tôi cần hiểu lý do nhân viên chọn ở lại với công ty và những yếu tố có thể khiến họ cân nhắc rời đi.', 'Tôi muốn tìm hiểu xem mọi người có cảm thấy mình thuộc về, được tôn trọng và hòa nhập trong công ty hay không.', 'Tôi cần biết nhân viên có thực sự tin tưởng vào lãnh đạo và các giá trị mà công ty tuyên bố hay không.', 'Tôi muốn hỏi về khối lượng công việc để biết nhóm nào đang quá tải trước khi người giỏi nghỉ việc.'];
+const APPS = [['Google Sheets', 'Gửi phản hồi trực tiếp tới Google Sheets.', 'Tạo trang tính mới'], ['Microsoft Excel', 'Gửi phản hồi vào bảng tính Excel.', 'Tạo trang tính mới'], ['Microsoft Teams', 'Nhận thông báo khi có phản hồi mới.', 'Đăng lên kênh'], ['Slack', 'Đăng phản hồi mới vào kênh của bạn.', 'Chi tiết'], ['Zapier', 'Kết nối với hàng nghìn ứng dụng khác.', 'Chi tiết'], ['Mailchimp', 'Thêm người trả lời vào danh sách email.', 'Chi tiết'], ['Tableau', 'Tạo biểu đồ trực quan chi tiết. (Doanh nghiệp)', 'Chi tiết']];
+let gen = '', dr = -1, ai = false, ctab = 'd', vw = 'tbl', ct = {}, rt0 = 0;
+
+const sbar = (s, n, extra = '') => `<header class="sb2"><div class="sbt"><b class="logo" data-a="surveys"><i></i></b><span>›</span><b>${esc(s.title)}</b><span class="tag ${s.status === 'open' ? '' : 'd'}">${s.status === 'open' ? 'Mở' : 'Bản nháp'}</span><div class="ar">${extra}<span class="avt">${esc(ini())}</span></div></div>
+  <div class="st4">${[['Khảo sát thiết kế', '/edit/'], ['Đăng khảo sát', '/publish/'], ['Kết nối ứng dụng', '/connect/'], ['Phân tích kết quả', '/results/']].map(([l, h], i) => `<a class="${i === n ? 'on' : ''}" href="javascript:void(0)" data-a="nav" data-h="${h}${s.id}">${i + 1}. ${l}</a>`).join('')}</div></header>`;
+
 function editor(id) {
   const s = find(id); if (!s) return home();
-  return nav() + `<main class="w">${steps(0)}<div class="card"><input type="text" data-f="title" value="${esc(s.title)}" aria-label="Tên khảo sát" style="font-size:1.2rem;font-weight:700"></div>
+  if (gen === id) { setTimeout(() => { gen = ''; render(); }, 1500); return `<div class="gen"><h1>Đang biến ý tưởng của bạn thành khảo sát...</h1><p class="m">Có thể mất vài giây. Sau đó bạn vẫn chỉnh sửa được.</p><div class="sk"><i></i><i></i><i></i><i></i><i></i></div></div>`; }
+  const chat = s.chat || [{ r: 'ai', t: INTRO }];
+  const tools = `<button class="g" data-a="nav" data-h="/classic/${s.id}">Trình soạn thảo cổ điển</button><button class="g" data-a="nav" data-h="/s/${s.id}?preview=1">Xem trước</button>${s.status === 'open' ? `<button data-a="copylink">Sao chép link khảo sát</button>` : `<button data-a="publish">Đăng khảo sát</button>`}`;
+  return sbar(s, 0, tools) + `<div class="qe"><aside class="cp"><div class="cmsg">${chat.map(m => `<div class="bub ${m.r}">${esc(m.t)}</div>`).join('')}
+  <div class="chips"><button class="g" data-a="publish">Đăng khảo sát</button><button class="g" data-a="addq2">Thêm câu hỏi</button><button class="g" data-a="nav" data-h="/classic/${s.id}">Khảo sát phong cách</button></div></div>
+  <div class="cin"><input type="text" id="ci" placeholder="Hãy cho MiniSurvey biết bạn muốn đổi gì" aria-label="Trò chuyện"><button class="go" data-a="chat" aria-label="Gửi">→</button></div><p class="m">Trợ lý mô phỏng: gõ “Thêm câu hỏi: …” hoặc “Đăng khảo sát”.</p></aside>
+  <section class="pv"><div class="pvc"><h2 class="pt">${esc(s.title)}</h2><p class="ph">Thêm tiêu đề trang (tùy chọn)</p>${s.desc ? `<p class="pd">${esc(s.desc)}</p>` : '<p class="ph2">Thêm mô tả (tùy chọn)</p>'}
+  ${s.questions.map((q, i) => `<div class="pq"><b>${i + 1}. ${esc(q.text)}</b>${q.type === 'text' ? '<div class="pin"></div>' : q.options.map(o => `<label class="opt"><input type="${q.type === 'single' ? 'radio' : 'checkbox'}" disabled> ${esc(o)}</label>`).join('')}</div>`).join('')}
+  <div class="pdone"><span>Xong</span></div><p class="pw">Được cung cấp bởi <b>MiniSurvey</b></p></div></section></div>`;
+}
+function classic(id) {
+  const s = find(id); if (!s) return home();
+  const modal = s.seen ? '' : `<div class="mdl"><div class="mbx"><h2>Đã tạo khảo sát!</h2><p class="m">Một vài việc bạn có thể làm tiếp theo:</p><p>✔ Xem lại độ chính xác<br>✔ Tùy chỉnh phong cách<br>✔ Điều chỉnh loại câu hỏi<br>✔ Thêm logic</p><button class="bt" data-a="seen">Tiếp tục tới khảo sát</button></div></div>`;
+  return sbar(s, 0, `<button class="g" data-a="nav" data-h="/edit/${s.id}">Xong chỉnh sửa</button><button class="g" data-a="nav" data-h="/s/${s.id}?preview=1">Xem trước</button><button data-a="publish">Đăng khảo sát</button>`) + modal + `<main class="w"><div class="card"><input type="text" data-f="title" value="${esc(s.title)}" aria-label="Tên khảo sát" style="font-size:1.2rem;font-weight:700"></div>
   ${s.questions.map((q, i) => `<div class="card"><div class="row"><b>${i + 1}.</b>
   <select data-f="type" data-q="${q.id}"><option value="single" ${q.type === 'single' ? 'selected' : ''}>Chọn một</option><option value="multi" ${q.type === 'multi' ? 'selected' : ''}>Chọn nhiều</option><option value="text" ${q.type === 'text' ? 'selected' : ''}>Câu trả lời mở</option></select>
   <button class="x" data-a="delq" data-q="${q.id}">Xóa câu</button></div>
   <input type="text" data-f="text" data-q="${q.id}" value="${esc(q.text)}" aria-label="Nội dung câu hỏi">
   ${q.type === 'text' ? '' : `<p class="m">Mỗi dòng là một lựa chọn</p><textarea data-f="options" data-q="${q.id}">${esc(q.options.join('\n'))}</textarea>`}</div>`).join('')}
-  <div class="row"><button class="g" data-a="addq">+ Thêm câu hỏi</button><button class="g" data-a="nav" data-h="/s/${s.id}?preview=1">Xem trước</button><button data-a="publish">Đăng khảo sát</button></div></main>`;
+  <div class="row"><button class="g" data-a="addq">+ Thêm câu hỏi</button></div></main>`;
 }
 function collect(id) {
   const s = find(id); if (!s) return home();
-  return nav() + `<main class="w">${steps(1)}<div class="card"><h2>${esc(s.title)}</h2><span class="tag">Mở</span>
-  <p class="m">Gửi đường link này cho người trả lời:</p><div class="row"><input type="text" id="lk" readonly value="${esc(link(s.id))}"><button data-a="copy">Sao chép URL</button></div>
-  <div class="note">Dữ liệu lưu trong trình duyệt (localStorage). Link chỉ nhận phản hồi trên cùng trình duyệt và thiết bị này. Muốn nhận từ nhiều người, xem phần nâng cấp trong README.</div></div>
-  <button data-a="nav" data-h="/results/${s.id}">Phân tích kết quả</button></main>`;
+  const n = s.responses.length, L = link(s.id), url = `<div class="urlr"><span>${esc(L)}</span><button class="g" data-a="copylink">Sao chép URL</button></div>`;
+  if (s.status !== 'open') return sbar(s, 1) + `<main class="w"><div class="card"><h2>Khảo sát chưa được đăng</h2><p class="m">Đăng khảo sát để nhận link gửi cho người trả lời.</p><button data-a="publish">Đăng khảo sát</button></div></main>`;
+  const ways = [['Mua phản hồi mục tiêu', 'Chọn đối tượng và thu thập phản hồi.'], ['Trang web', 'Nhúng khảo sát vào trang web của bạn.'], ['Chia sẻ liên kết', 'Gửi đường dẫn qua mạng xã hội hoặc tin nhắn.'], ['Gửi tin nhắn văn bản', 'Gửi khảo sát qua SMS. (Doanh nghiệp)'], ['Nhập dữ liệu thủ công', 'Nhập câu trả lời giấy vào hệ thống.']];
+  const body = n ? `<div class="rowb"><h1>Người thu thập khảo sát<small>${n} phản hồi</small></h1><div class="row"><button class="g" data-a="demo">Quản lý thông báo</button><button class="gold" data-a="demo">Chọn đối tượng</button><button data-a="demo">Thêm bộ sưu tập mới +</button></div></div>
+    <div class="card"><table><tr><th>Tên bộ sưu tập</th><th>Trạng thái</th><th>Phản hồi</th><th>Ngày sửa đổi</th></tr><tr><td><b>Liên kết web 1</b>${url}<small class="m">Được tạo ngày ${dt(s.upd)}</small></td><td><span class="tag">Mở</span></td><td><span class="tag o">${n}</span></td><td>${dt(s.upd)}</td></tr></table></div>`
+    : `<div class="ready"><div class="card"><h2>Bạn đã sẵn sàng công bố khảo sát của mình chưa?</h2>${url}<div class="row">${['f', 'in', '𝕏', '💬'].map(x => `<i class="shi">${x}</i>`).join('')}</div></div><div class="card"><h3>Gửi qua Email</h3><p class="m">Thu thập phản hồi qua email, nhắc người chưa trả lời và theo dõi kết quả.</p><button class="g" data-a="demo">Thử qua email</button></div></div>
+    <h2 class="h2b">Nhiều cách gửi hơn</h2><div class="g5">${ways.map(([h, p]) => `<div class="card"><b>${h}</b><p class="m">${p}</p></div>`).join('')}</div>`;
+  return sbar(s, 1) + `<main class="w wide">${body}</main>`;
 }
+function connect(id) {
+  const s = find(id); if (!s) return home();
+  const list = ctab === 'd' ? `<h3>Nổi bật</h3>${APPS.map(([n, d, b]) => `<div class="apr"><i class="aic">${n[0]}</i><div><b>${n}</b><p class="m">${d}</p></div><button class="g" data-a="demo">${b}</button></div>`).join('')}<p class="m">Không thấy ứng dụng bạn cần? <a href="javascript:void(0)" data-a="demo">Yêu cầu thêm</a></p>` : '<div class="card"><p class="m">Bạn chưa kết nối ứng dụng nào.</p></div>';
+  return sbar(s, 2) + `<main class="w wide"><h1>Tự động hóa dữ liệu của bạn mà không cần tốn sức.</h1><p class="m">Kết nối MiniSurvey với các công cụ để dữ liệu tự chuyển đến nơi bạn cần.</p>
+  <div class="stab"><a class="${ctab === 'd' ? 'on' : ''}" href="javascript:void(0)" data-a="ctab" data-t="d">Khám phá</a><a class="${ctab === 'm' ? 'on' : ''}" href="javascript:void(0)" data-a="ctab" data-t="m">Quản lý</a></div>
+  <input type="text" data-flt=".apr" placeholder="Tìm theo tên ứng dụng hoặc công cụ" aria-label="Tìm ứng dụng">${list}</main>`;
+}
+const sugHtml = () => `<div class="sug" id="sug"><div class="drh">💡 Gợi ý cho gắn kết của nhân viên<button class="x" data-a="sugx" aria-label="Đóng">✕</button></div>${SUGS.map((x, i) => `<button data-a="sug" data-i="${i}">${x}</button>`).join('')}</div>`;
+function applyFlt() { const i = document.querySelector('[data-flt]'); if (!i) return; const q = i.value.trim().toLowerCase(), st = document.getElementById('fs')?.value || ''; document.querySelectorAll(i.dataset.flt).forEach(r => { r.hidden = !!((q && !r.textContent.toLowerCase().includes(q)) || (st && r.dataset.st && r.dataset.st !== st)); }); }
 function respond(id, preview) {
   const s = find(id);
   if (!s) return `<main class="w"><div class="card"><h2>Không tìm thấy khảo sát</h2><p class="m">Link này chỉ mở được trên trình duyệt đã tạo khảo sát.</p></div></main>`;
+  rt0 = Date.now();
   return `<main class="w"><form class="card" id="f"><h1>${esc(s.title)}</h1>${preview ? '<p class="note">Chế độ xem trước: phản hồi sẽ không được lưu.</p>' : ''}
   ${s.questions.map((q, i) => `<fieldset style="border:0;padding:0;margin:1rem 0"><legend><b>${i + 1}. ${esc(q.text)}</b></legend>
   ${q.type === 'text' ? `<textarea name="${q.id}"></textarea>` : q.options.map(o => `<label class="opt"><input type="${q.type === 'single' ? 'radio' : 'checkbox'}" name="${q.id}" value="${esc(o)}"> ${esc(o)}</label>`).join('')}</fieldset>`).join('')}
   <button>Xong</button></form></main>`;
 }
+const aiTxt = s => { const o = s.questions.filter(q => q.type !== 'text').map(q => { const v = s.responses.map(r => r.a[q.id]).filter(x => x && x.length); if (!v.length) return ''; const b = q.options.map(o => [o, v.filter(x => [].concat(x).includes(o)).length]).sort((a, c) => c[1] - a[1])[0]; return `Câu ${s.questions.indexOf(q) + 1}: “${esc(b[0])}” được chọn nhiều nhất (${Math.round(b[1] / v.length * 100)}%).`; }).filter(Boolean); return o.length ? o : ['Chưa có phản hồi để phân tích.']; };
+const drawer = (s, i) => { const r = s.responses[i]; if (!r) return ''; return `<aside class="dr"><div class="drh"><b>Câu trả lời đầy đủ</b><button class="x" data-a="drx" aria-label="Đóng">✕</button></div><div class="drc"><span class="tag">Hoàn thành</span><p class="m">Bộ sưu tập: Liên kết web 1 (Weblink)<br>Bắt đầu: ${dtm(r.t - (r.dur || 0) * 1000)}<br>Lần sửa đổi cuối cùng: ${dtm(r.t)}</p><b>Trang 1</b>${s.questions.map((q, k) => `<p><b>${k + 1}. ${esc(q.text)}</b><br>${esc([].concat(r.a[q.id] || '').join('; ') || '—')}</p>`).join('')}</div></aside>`; };
+function qcard(s, q, i) {
+  const vals = s.responses.map(r => r.a[q.id]).filter(v => v && v.length), n = vals.length;
+  const head = `<div class="qh"><small>Câu ${i + 1} · ${n} phản hồi</small>${q.type === 'text' ? '' : `<select data-ct="${q.id}" aria-label="Kiểu biểu đồ"><option value="h" ${ct[q.id] !== 'v' ? 'selected' : ''}>Thanh ngang</option><option value="v" ${ct[q.id] === 'v' ? 'selected' : ''}>Cột dọc</option></select>`}</div><h3>${esc(q.text)}</h3>`;
+  if (q.type === 'text') return `<div class="qc">${head}<div class="stab"><a class="on">PHẢN HỒI (${n})</a><a>ĐÁM MÂY TỪ</a><a>THẺ (0)</a></div><p class="m">Hiển thị ${n} phản hồi</p>${s.responses.map((r, k) => r.a[q.id] ? `<div class="item"><span>${esc(r.a[q.id])}</span><a href="javascript:void(0)" data-a="dr" data-i="${k}">Xem toàn bộ phản hồi</a></div>` : '').join('')}</div>`;
+  const rows = q.options.map((o, k) => { const c = vals.filter(v => [].concat(v).includes(o)).length, p = n ? Math.round(c / n * 10000) / 100 : 0, col = PAL[k % PAL.length], tip = `${esc(o)}: ${String(p).replace('.', ',')}% (${c} phản hồi) trong tổng số ${n} câu trả lời`; return [o, p, col, tip]; });
+  const chart = ct[q.id] === 'v' ? `<div class="vch">${rows.map(([o, p, col, tip]) => `<div title="${tip}"><i style="height:${p}%;background:${col}"></i><span>${esc(o)}</span><b>${p}%</b></div>`).join('')}</div>`
+    : rows.map(([o, p, col, tip]) => `<div class="hr" title="${tip}"><span>${esc(o)}</span><div class="hb"><i style="width:${p}%;background:${col}"></i></div><b>${p}%</b></div>`).join('');
+  return `<div class="qc">${head}${chart}</div>`;
+}
 function results(id, tab = 'sum') {
   const s = find(id); if (!s) return home();
-  const n = s.responses.length;
-  const sum = s.questions.map((q, i) => {
-    const vals = s.responses.map(r => r.a[q.id]).filter(v => v && v.length);
-    if (q.type === 'text') return `<div class="card"><b>${i + 1}. ${esc(q.text)}</b><p class="m">${vals.length} phản hồi</p>${vals.map(v => `<div class="item">${esc(v)}</div>`).join('')}</div>`;
-    return `<div class="card"><b>${i + 1}. ${esc(q.text)}</b><p class="m">${vals.length} phản hồi</p>${q.options.map(o => {
-      const c = vals.filter(v => [].concat(v).includes(o)).length, p = vals.length ? Math.round(c / vals.length * 100) : 0;
-      return `<div>${esc(o)}: ${p}% (${c})</div><div class="bar"><i style="width:${p}%"></i></div>`; }).join('')}</div>`;
-  }).join('');
-  const tbl = `<div class="card"><table><tr><th>#</th><th>Thời gian</th>${s.questions.map((q, i) => `<th>Câu ${i + 1}</th>`).join('')}</tr>${s.responses.map((r, k) => `<tr><td>${k + 1}</td><td>${new Date(r.t).toLocaleString('vi-VN')}</td>${s.questions.map(q => `<td>${esc([].concat(r.a[q.id] || '').join('; '))}</td>`).join('')}</tr>`).join('')}</table></div>`;
-  return nav() + `<main class="w">${steps(2)}<h2>${esc(s.title)}</h2><p class="m">Người trả lời: ${n}</p>
-  <div class="row"><button class="${tab === 'sum' ? '' : 'g'}" data-a="tab" data-t="sum">Tóm tắt câu hỏi</button><button class="${tab === 'ind' ? '' : 'g'}" data-a="tab" data-t="ind">Phản hồi cá nhân</button><button class="y" data-a="csv">Xuất CSV</button><button class="g" data-a="nav" data-h="/publish/${s.id}">Lấy link</button></div>
-  ${n ? (tab === 'sum' ? sum : tbl) : '<div class="card"><p class="m">Chưa có phản hồi. Mở link khảo sát và gửi thử một bài.</p></div>'}</main>`;
+  const n = s.responses.length, tb = (t, l) => `<a class="${tab === t ? 'on' : ''}" href="javascript:void(0)" data-a="tab" data-t="${t}">${l}</a>`;
+  const empty = `<div class="empty"><div class="warn">!</div><p>Những hiểu biết bắt đầu từ những câu hỏi. Mở link khảo sát và gửi thử một bài.</p><button data-a="nav" data-h="/publish/${s.id}">Lấy link khảo sát</button></div>`;
+  let body;
+  if (tab === 'dash') {
+    const d = s.dash || [];
+    body = `<div class="dash"><div class="rowb"><h2>Bảng điều khiển</h2><button class="g" data-a="newdash">+ Bảng điều khiển mới</button></div><p class="m">Dữ liệu của bạn kể một câu chuyện. Hãy xây dựng bảng điều khiển với các biểu đồ và kết quả, sau đó chia sẻ với người khác.</p><input type="text" data-flt=".dcard" placeholder="Tìm báo cáo" aria-label="Tìm báo cáo">
+    ${d.map(x => `<div class="dcard"><div><b>${esc(x.name)}</b><small class="m">Ngày tạo: ${dt(x.t)}</small></div><div class="row"><button class="g" data-a="tab" data-t="sum">Xem trước</button><button class="g" data-a="ren" data-i="${x.id}">Chỉnh sửa</button><button class="x" data-a="deld" data-i="${x.id}">Xóa</button></div></div>`).join('') || '<p class="m">Chưa có bảng điều khiển nào.</p>'}</div>`;
+  } else if (!n) body = empty;
+  else if (tab === 'ind') {
+    const i0 = dr >= 0 ? dr : n - 1;
+    body = `<div class="rowb"><span class="m">NGƯỜI TRẢ LỜI: ${n} trên ${n}</span><div class="seg"><a class="${vw === 'tbl' ? 'on' : ''}" href="javascript:void(0)" data-a="vw" data-v="tbl">BẢNG</a><a class="${vw === 'one' ? 'on' : ''}" href="javascript:void(0)" data-a="vw" data-v="one">ĐƠN</a></div></div>` + (vw === 'one' ? `<div class="qc">${drawer(s, i0).replace('class="dr"', 'class="dr inl"')}</div>` :
+      `<div class="card"><table><tr><th>#</th><th>Trạng thái</th><th>Lần sửa đổi cuối cùng</th><th>Thời gian đã dành</th><th>Bộ sưu tập</th>${s.questions.map((q, k) => `<th>Câu ${k + 1}</th>`).join('')}<th></th></tr>${s.responses.map((r, k) => `<tr><td>${k + 1}</td><td><span class="tag">Hoàn thành</span></td><td>${dtm(r.t)}</td><td>${mmss(r.dur)}</td><td>Liên kết web 1 (Weblink)</td>${s.questions.map(q => `<td>${esc([].concat(r.a[q.id] || '').join('; '))}</td>`).join('')}<td><a href="javascript:void(0)" data-a="dr" data-i="${k}" aria-label="Xem phản hồi">→</a></td></tr>`).reverse().join('')}</table></div>`);
+  } else body = `<span class="m">NGƯỜI TRẢ LỜI: ${n} trên ${n}</span><h3 class="pg1">Trang 1</h3>${s.questions.map((q, i) => qcard(s, q, i)).join('')}`;
+  const tools = `<div class="tb"><div><a data-a="demo">⚙ Quy tắc</a><a data-a="demo">👁 Lượt xem</a><a data-a="demo">🔗 Dữ liệu được chia sẻ</a></div><div><a data-a="demo">Tùy chọn</a><a class="${ai ? 'on' : ''}" data-a="ai">✨ Phân tích bằng AI</a><a data-a="multi">Phân tích khảo sát đa dạng</a><a data-a="csv">⤓ Xuất</a><a data-a="demo">Thêm vào</a><button data-a="nav" data-h="/publish/${s.id}">Chia sẻ</button></div></div>`;
+  const side = ai ? `<aside class="aip"><div class="drh"><b>Phân tích bằng AI</b><button class="x" data-a="ai" aria-label="Đóng">✕</button></div><div class="bub me">Nhân viên mong muốn những gì để tăng sự hài lòng?</div><div class="bub ai">${aiTxt(s).map(x => `<p>${x}</p>`).join('')}<small class="m">Tóm tắt mô phỏng từ số liệu thật của khảo sát, chưa gọi AI.</small></div></aside>` : '';
+  return sbar(s, 3) + `<div class="stab top3">${tb('sum', 'Tóm tắt câu hỏi')}${tb('ind', 'Phản hồi cá nhân')}${tb('dash', 'Bảng điều khiển')}</div>${tools}
+  <div class="rs"><aside class="pnl"><div class="drh"><b>Xuất dữ liệu</b><button class="x" data-a="prx" aria-label="Đóng">✕</button></div><p>Dữ liệu tốt cần có cách để xuất ra. Bản demo xuất được CSV.</p><div class="row"><button class="g" data-a="demo">Tìm hiểu thêm</button><button class="gold" data-a="upgrade">Nâng cấp</button></div></aside><main class="rm">${body}</main>${side}${dr >= 0 && !(tab === 'ind' && vw === 'one') ? drawer(s, dr) : ''}</div>`;
 }
 
 let tab = 'sum';
@@ -364,12 +419,14 @@ function render() {
   const [, r, id] = (location.hash.slice(1).split('?')[0] || '/').split('/');
   const prev = location.hash.includes('preview=1');
   app.innerHTML = !r ? landing() : r === 'home' ? home() : r === 'login' ? login() : r === 'signup' ? authPage('signup') : r === 'consent' ? consent(id) : r === 'onboard' ? onboard(id) : r === 'surveys' ? surveys() : r === 'multi' ? multi() : r === 'oauth' ? oauth(id) : r === 'edit' ? (user() ? editor(id) : login()) :
-    r === 'publish' ? (user() ? collect(id) : login()) : r === 'results' ? (user() ? results(id, tab) : login()) : r === 's' ? respond(id, prev) : landing();
+    r === 'classic' ? (user() ? classic(id) : login()) : r === 'connect' ? (user() ? connect(id) : login()) : r === 'publish' ? (user() ? collect(id) : login()) : r === 'results' ? (user() ? results(id, tab) : login()) : r === 's' ? respond(id, prev) : landing();
 }
-addEventListener('hashchange', () => { tab = 'sum'; render(); });
+addEventListener('hashchange', () => { tab = 'sum'; dr = -1; ai = false; render(); });
 
 app.addEventListener('input', e => {
   const t = e.target, f = t.dataset.f;
+  if (t.dataset.flt) return applyFlt();
+  if (t.id === 'idea') document.getElementById('sug')?.classList.remove('on');
   if (t.id === 'em') { document.getElementById('nx').disabled = !/^\S+@\S+\.\S+$/.test(t.value.trim()); document.getElementById('e').textContent = ''; return; }
   if (!f) return;
   const id = location.hash.split('/')[2];
@@ -382,7 +439,9 @@ app.addEventListener('input', e => {
   });
   if (f === 'type') render();
 });
-app.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'em') document.getElementById('nx').click(); });
+app.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'em') document.getElementById('nx').click(); if (e.key === 'Enter' && e.target.id === 'ci') document.querySelector('[data-a=chat]').click(); });
+app.addEventListener('change', e => { if (e.target.dataset.ct) { ct[e.target.dataset.ct] = e.target.value; render(); } if (e.target.id === 'fs') applyFlt(); });
+app.addEventListener('focusin', e => { if (e.target.id === 'idea') document.getElementById('sug')?.classList.add('on'); });
 app.addEventListener('change', e => {
   if (e.target.id === 'c1') document.getElementById('cn').disabled = !e.target.checked; if (e.target.id === 'lang') { localStorage.setItem(LK, e.target.value); render(); } });
 app.addEventListener('submit', e => {
@@ -391,20 +450,43 @@ app.addEventListener('submit', e => {
   if (location.hash.includes('preview=1')) return go('/edit/' + id);
   const fd = new FormData(e.target), a = {};
   find(id).questions.forEach(q => { a[q.id] = q.type === 'multi' ? fd.getAll(q.id) : (fd.get(q.id) || ''); });
-  update(id, s => s.responses.push({ t: Date.now(), a }));
+  update(id, s => s.responses.push({ t: Date.now(), a, dur: Math.round((Date.now() - rt0) / 1000) }));
   app.innerHTML = `<main class="w"><div class="card"><h2>Cảm ơn bạn đã trả lời</h2><p class="m">Phản hồi của bạn đã được ghi nhận.</p></div></main>`;
 });
 app.addEventListener('click', e => {
   const b = e.target.closest('[data-a]'); if (!b) return;
   const a = b.dataset.a, id = location.hash.split('/')[2]?.split('?')[0];
   if (a === 'home') go('/home');
+  if (a === 'copylink') { navigator.clipboard?.writeText(link(b.dataset.id || id)); b.textContent = 'Đã sao chép'; }
+  if (a === 'seen') { update(id, s => s.seen = 1); render(); }
+  if (a === 'addq2') { update(id, s => s.questions.push({ id: uid(), type: 'single', text: 'Câu hỏi mới', options: ['Lựa chọn A', 'Lựa chọn B'] })); render(); }
+  if (a === 'chat') {
+    const v = document.getElementById('ci').value.trim(); if (!v) return;
+    update(id, s => { s.chat = s.chat || [{ r: 'ai', t: INTRO }]; s.chat.push({ r: 'me', t: v }); const m = v.match(/^(?:thêm|add)(?: câu hỏi| question)?[:\s]+(.+)/i);
+      if (m) { s.questions.push({ id: uid(), type: 'single', text: m[1], options: ['Lựa chọn A', 'Lựa chọn B'] }); s.chat.push({ r: 'ai', t: 'Đã thêm câu hỏi “' + m[1] + '”. Chỉnh lựa chọn trong Trình soạn thảo cổ điển.' }); }
+      else if (/đăng|publish/i.test(v)) { s.status = 'open'; s.chat.push({ r: 'ai', t: 'Khảo sát đã được đăng. Mở bước “Đăng khảo sát” để lấy link.' }); }
+      else s.chat.push({ r: 'ai', t: 'Bản demo chưa gọi AI thật. Hãy gõ “Thêm câu hỏi: …” hoặc “Đăng khảo sát”.' }); });
+    render(); document.querySelector('.cmsg')?.scrollTo(0, 1e6);
+  }
+  if (a === 'demo') alert('Bản demo: tính năng này chỉ để minh họa, chưa hoạt động.');
+  if (a === 'ctab') { ctab = b.dataset.t; render(); }
+  if (a === 'ai') { ai = !ai; render(); }
+  if (a === 'vw') { vw = b.dataset.v; render(); }
+  if (a === 'dr') { dr = +b.dataset.i; render(); }
+  if (a === 'drx') { dr = -1; render(); }
+  if (a === 'prx') b.closest('.pnl').remove();
+  if (a === 'sug') { document.getElementById('idea').value = SUGS[+b.dataset.i]; document.getElementById('sug').classList.remove('on'); }
+  if (a === 'sugx') document.getElementById('sug').classList.remove('on');
+  if (a === 'newdash') { update(id, s => (s.dash = s.dash || []).push({ id: uid(), name: 'Bảng điều khiển ' + s.title, t: Date.now() })); render(); }
+  if (a === 'ren') { const n = prompt('Tên bảng điều khiển'); if (n && n.trim()) { update(id, s => { const d = s.dash.find(x => x.id === b.dataset.i); if (d) d.name = n.trim(); }); render(); } }
+  if (a === 'deld') { update(id, s => s.dash = s.dash.filter(x => x.id !== b.dataset.i)); render(); }
   if (a === 'loginpage') go('/login');
   if (a === 'nav') go(b.dataset.h);
   if (a === 'logout') { ['ms_user', 'ms_pic', 'ms_email'].forEach(k => localStorage.removeItem(k)); go('/'); render(); }
   if (a === 'tpl') add(make(b.dataset.k));
   if (a === 'idea') {
     const v = document.getElementById('idea').value.trim(), l = v.toLowerCase();
-    add(make(/nhân viên|employee|công ty/.test(l) ? 'nv' : /khách|customer|dịch vụ/.test(l) ? 'kh' : 'trong', v ? 'Khảo sát: ' + v : ''));
+    const ns = make(/nhân viên|employee|công ty/.test(l) ? 'nv' : /khách|customer|dịch vụ/.test(l) ? 'kh' : 'trong', v ? ('Khảo sát: ' + v).slice(0, 60) : '', v); gen = ns.id; add(ns);
   }
   if (a === 'del' && confirm('Xóa khảo sát này?')) { const d = load(); d.surveys = d.surveys.filter(s => s.id !== b.dataset.id); save(d); render(); }
   if (a === 'addq') { update(id, s => s.questions.push({ id: uid(), type: 'single', text: 'Câu hỏi mới', options: ['Lựa chọn A', 'Lựa chọn B'] })); render(); }
@@ -445,7 +527,7 @@ app.addEventListener('click', e => {
     localStorage.removeItem('ms_pic'); localStorage.removeItem('ms_email'); localStorage.setItem('ms_user', name); go(b.dataset.m === 'signup' ? '/consent/' + b.dataset.k : '/home'); render();
   }
   if (a === 'sc') document.getElementById(b.dataset.t)?.scrollIntoView({ behavior: 'smooth' });
-  if (a === 'tab') { tab = b.dataset.t; render(); }
+  if (a === 'tab') { tab = b.dataset.t; dr = -1; render(); }
   if (a === 'csv') {
     const s = find(id), q = x => '"' + String(x).replace(/"/g, '""') + '"';
     const rows = [['Thời gian', ...s.questions.map(x => x.text)].map(q).join(',')].concat(s.responses.map(r => [new Date(r.t).toISOString(), ...s.questions.map(x => [].concat(r.a[x.id] || '').join('; '))].map(q).join(',')));
