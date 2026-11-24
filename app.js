@@ -9,6 +9,67 @@ const update = (id, fn) => { const d = load(); const s = d.surveys.find(x => x.i
 const go = h => { location.hash = h; };
 const link = id => location.origin + location.pathname + '#/s/' + id;
 
+const LK = 'ms_lang';
+const lang = () => (localStorage.getItem(LK) === 'en' ? 'en' : 'vi');
+let uc = 0;
+const L = {
+vi: {
+  login: 'Đăng nhập', logout: 'Đăng xuất', start: 'Bắt đầu miễn phí', need: 'Nhập tên để tiếp tục.',
+  loginSub: 'Bản demo: chỉ cần nhập tên, dữ liệu lưu trong trình duyệt của bạn.', namePh: 'Tên của bạn', enter: 'Vào Home',
+  menu: [['uc', 'Giải pháp'], ['ins', 'Tài nguyên'], ['tst', 'Đánh giá']],
+  h1: 'Hỏi đúng câu hỏi. Nghe đúng điều mọi người nghĩ.',
+  sub: 'Tạo khảo sát trong vài phút, gửi bằng một đường link và xem kết quả ngay. Dành cho đội nhóm, lớp học, cửa hàng và dự án của bạn.',
+  demoT: 'Chương trình gắn kết nhân viên', demoM: [['Điểm gắn kết', '47'], ['Hài lòng', '82%'], ['Thuộc về', '73%']],
+  demoC: 'Gắn kết theo quý', demoTip: 'Ghi nhận tốt giúp gắn kết tăng',
+  statT: 'Một công cụ khảo sát đơn giản, nhiều nhóm tin dùng',
+  stats: [['10 triệu+', 'câu hỏi đã gửi'], ['500 nghìn+', 'người dùng'], ['20 nghìn+', 'lượt đánh giá']],
+  ucT: 'Một nền tảng cho nhiều nhu cầu',
+  ucs: [
+    ['Phản hồi nhân viên', 'Hiểu đội ngũ của bạn', 'Đo mức gắn kết, hài lòng và cảm giác thuộc về để giữ chân người giỏi.', ['Khảo sát gắn kết theo quý', 'Phát hiện quá tải sớm', 'Theo dõi xu hướng theo thời gian']],
+    ['Phản hồi khách hàng', 'Nghe khách nói thật', 'Biết khách hài lòng ở đâu và chưa hài lòng ở đâu sau mỗi lần mua hàng.', ['Mẫu khảo sát hài lòng', 'Hỏi mức độ giới thiệu', 'Gom góp ý bằng câu trả lời mở']],
+    ['Nghiên cứu thị trường', 'Kiểm chứng ý tưởng', 'Thu thập ý kiến của nhóm đối tượng trước khi bạn đầu tư thời gian và tiền bạc.', ['Câu hỏi chọn một, chọn nhiều', 'So sánh các lựa chọn', 'Xuất CSV để phân tích sâu']],
+    ['Phát triển sản phẩm', 'Làm đúng thứ người dùng cần', 'Hỏi người dùng tính năng nào quan trọng nhất và điều gì đang gây khó chịu.', ['Xếp thứ tự ưu tiên tính năng', 'Thu thập lỗi gặp phải', 'Lặp lại khảo sát sau mỗi bản cập nhật']],
+    ['Quản lý sự kiện', 'Biết người tham dự nghĩ gì', 'Gửi một đường link cho người đến dự và nhận phản hồi ngay khi sự kiện kết thúc.', ['Mẫu đăng ký tham dự', 'Đánh giá sau sự kiện', 'Xem kết quả theo thời gian thực']],
+    ['Biểu mẫu trực tuyến', 'Thu thập thông tin gọn gàng', 'Dùng như biểu mẫu đăng ký, bình chọn hoặc bài kiểm tra nhanh trong lớp.', ['Tạo trong vài phút', 'Chia sẻ bằng một link', 'Mỗi phản hồi được ghi lại tự động']]
+  ],
+  insT: 'Những bài viết giúp bạn hỏi tốt hơn',
+  ins: [['Viết câu hỏi để nhận câu trả lời thật', 'Mẹo tránh câu hỏi dẫn dắt và câu hỏi quá dài.'], ['Đọc kết quả trong 5 phút', 'Cách nhìn biểu đồ và rút ra việc cần làm.'], ['Mẫu cho khảo sát đầu tiên', 'Chọn mẫu phù hợp rồi chỉnh theo ý bạn.'], ['Làm sao để nhiều người trả lời hơn', 'Độ dài, thời điểm gửi và lời mời ngắn gọn.']],
+  tstT: 'Người dùng nói gì',
+  tst: [['Chúng tôi thu được phản hồi của cả đội chỉ trong một buổi chiều. Biểu đồ rõ ràng nên cuộc họp sau đó rất ngắn.', 'Trưởng nhóm vận hành'], ['Học sinh trả lời nhanh hơn hẳn so với phiếu giấy, và tôi xuất bảng điểm khảo sát ngay trong giờ nghỉ.', 'Giáo viên chủ nhiệm'], ['Khách để lại góp ý nhiều hơn vì chỉ cần mở một đường link và bấm vài lần.', 'Chủ cửa hàng nhỏ']],
+  trustT: 'Dữ liệu của bạn là của bạn', trust: 'Bản học tập này lưu mọi thứ ngay trong trình duyệt của bạn, không gửi đi đâu khác. Phần gợi ý câu hỏi chỉ là mô phỏng, không gọi AI thật.',
+  finT: 'Sẵn sàng hỏi câu hỏi đầu tiên?', finS: 'Tạo khảo sát miễn phí, không cần thẻ.',
+  foot: [['Sản phẩm', ['Tạo khảo sát', 'Mẫu có sẵn', 'Phân tích kết quả', 'Xuất CSV']], ['Mẫu phổ biến', ['Gắn kết nhân viên', 'Hài lòng khách hàng', 'Đăng ký sự kiện']], ['Tài nguyên', ['Hướng dẫn', 'Bài viết', 'Câu hỏi thường gặp']], ['Giới thiệu', ['Về dự án', 'Liên hệ', 'Quyền riêng tư']]],
+  note: 'Nội dung, số liệu và đánh giá trên trang này là hư cấu, chỉ để minh họa.'
+},
+en: {
+  login: 'Log in', logout: 'Log out', start: 'Start for free', need: 'Enter your name to continue.',
+  loginSub: 'Demo only: just enter a name. Data stays in your own browser.', namePh: 'Your name', enter: 'Go to Home',
+  menu: [['uc', 'Solutions'], ['ins', 'Resources'], ['tst', 'Reviews']],
+  h1: 'Ask better questions. Hear what people really think.',
+  sub: 'Build a survey in minutes, share it with one link and see results right away. Made for teams, classrooms, shops and side projects.',
+  demoT: 'Employee engagement program', demoM: [['Engagement score', '47'], ['Satisfaction', '82%'], ['Belonging', '73%']],
+  demoC: 'Engagement by quarter', demoTip: 'Better recognition lifted engagement',
+  statT: 'A simple survey tool that many teams rely on',
+  stats: [['10M+', 'questions sent'], ['500K+', 'users'], ['20K+', 'reviews']],
+  ucT: 'One platform, many needs',
+  ucs: [
+    ['Employee feedback', 'Understand your team', 'Measure engagement, satisfaction and belonging so you can keep your best people.', ['Quarterly engagement surveys', 'Spot overload early', 'Track trends over time']],
+    ['Customer feedback', 'Hear the honest truth', 'Learn where customers are happy and where they are not after every purchase.', ['Satisfaction templates', 'Ask how likely they are to recommend', 'Collect comments with open questions']],
+    ['Market research', 'Test your ideas', 'Gather opinions from your target group before you spend time and money.', ['Single and multiple choice questions', 'Compare options side by side', 'Export CSV for deeper analysis']],
+    ['Product development', 'Build what users need', 'Ask which features matter most and what is getting in the way.', ['Rank feature priorities', 'Collect problems people hit', 'Repeat the survey after each update']],
+    ['Event planning', 'Know what guests think', 'Send one link to attendees and get feedback the moment the event ends.', ['Registration templates', 'Post-event ratings', 'Live results']],
+    ['Online forms', 'Collect info neatly', 'Use it as a sign-up form, a poll or a quick classroom quiz.', ['Build in minutes', 'Share with one link', 'Every response is saved automatically']]
+  ],
+  insT: 'Reads that help you ask better',
+  ins: [['Write questions that get honest answers', 'Tips to avoid leading and overly long questions.'], ['Read your results in 5 minutes', 'How to scan the charts and decide what to do next.'], ['Templates for your first survey', 'Pick a template, then make it your own.'], ['How to get more people to respond', 'Length, timing and a short invitation.']],
+  tstT: 'What people say',
+  tst: [['We got feedback from the whole team in one afternoon. The charts were clear, so the follow-up meeting was short.', 'Operations lead'], ['Students answer much faster than on paper, and I export the results during the break.', 'Homeroom teacher'], ['Customers leave more comments because it only takes one link and a few taps.', 'Small shop owner']],
+  trustT: 'Your data is yours', trust: 'This learning project keeps everything in your own browser and sends nothing elsewhere. The idea-to-survey feature is a simulation, not a real AI call.',
+  finT: 'Ready to ask your first question?', finS: 'Create a survey for free, no card needed.',
+  foot: [['Product', ['Create a survey', 'Templates', 'Analyze results', 'Export CSV']], ['Popular templates', ['Employee engagement', 'Customer satisfaction', 'Event sign-up']], ['Resources', ['Guides', 'Articles', 'FAQ']], ['About', ['About the project', 'Contact', 'Privacy']]],
+  note: 'Content, numbers and reviews on this page are fictional and for illustration only.'
+}};
+
 const TPL = {
   nv: ['Khảo sát gắn kết nhân viên', [
     ['single', 'Bạn hài lòng với công việc hiện tại ở mức nào?', ['Rất hài lòng', 'Hài lòng', 'Bình thường', 'Không hài lòng']],
@@ -27,20 +88,33 @@ function make(key, title) {
 }
 function add(s) { const d = load(); d.surveys.unshift(s); save(d); go('/edit/' + s.id); }
 
-const nav = () => `<nav><b data-a="home">MiniSurvey</b>${user() ? `<span class="m">${esc(user())}</span><button class="g" data-a="logout">Đăng xuất</button>` : `<button data-a="loginpage">Đăng nhập</button>`}</nav>`;
+const nav = () => { const t = L[lang()]; return `<nav><b data-a="home">MiniSurvey</b><select id="lang" aria-label="Language"><option value="vi"${lang() === 'vi' ? ' selected' : ''}>Tiếng Việt</option><option value="en"${lang() === 'en' ? ' selected' : ''}>English</option></select>${user() ? `<span class="m">${esc(user())}</span><button class="g" data-a="logout">${t.logout}</button>` : `<button data-a="loginpage">${t.login}</button>`}</nav>`; };
 const steps = (n, id) => `<div class="steps">${['Thiết kế', 'Đăng khảo sát', 'Phân tích kết quả'].map((t, i) =>
   `<span class="${i === n ? 'on' : ''}">${i + 1}. ${t}</span>`).join('')}</div>`;
 
 function landing() {
-  return nav() + `<section class="hero"><h1>Hỏi đúng người, nghe đúng điều họ nói.</h1>
-  <p class="m">Tạo khảo sát, gửi một đường link và xem kết quả ngay trên trình duyệt. Bản học tập mô phỏng luồng của một nền tảng khảo sát.</p>
-  <button class="y" data-a="${user() ? 'home' : 'loginpage'}">Bắt đầu miễn phí</button></section>`;
+  const t = L[lang()], u = t.ucs[uc], go1 = user() ? 'home' : 'loginpage';
+  const cta = `<button class="y" data-a="${go1}">${t.start}</button>`;
+  return nav() + `<header class="lh"><div class="lm">${t.menu.map(([k, n]) => `<a href="javascript:void(0)" data-a="sc" data-t="${k}">${n}</a>`).join('')}</div>
+  <h1>${t.h1}</h1><p class="m">${t.sub}</p>${cta}
+  <div class="demo" aria-hidden="true"><div class="dh">${t.demoT}</div>
+  <div class="dm">${t.demoM.map(([n, v]) => `<div><small>${n}</small><b>${v}</b></div>`).join('')}</div>
+  <div class="dc"><small>${t.demoC}</small><svg viewBox="0 0 300 90"><polyline fill="none" stroke="#0e6b4d" stroke-width="3" points="10,60 100,35 190,50 290,18"/><circle cx="290" cy="18" r="5" fill="#0e6b4d"/></svg><span class="tip">${t.demoTip}</span></div></div></header>
+  <section class="ls"><h2>${t.statT}</h2><div class="st">${t.stats.map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join('')}</div></section>
+  <section class="ls dark" id="uc"><h2>${t.ucT}</h2><div class="tabs">${t.ucs.map((x, i) => `<button class="${i === uc ? 'y' : 'g'}" data-a="uc" data-i="${i}">${x[0]}</button>`).join('')}</div>
+  <div class="ucc"><h3>${u[1]}</h3><p>${u[2]}</p><ul>${u[3].map(p => `<li>${p}</li>`).join('')}</ul></div></section>
+  <section class="ls" id="ins"><h2>${t.insT}</h2><div class="g4">${t.ins.map(([h, p]) => `<div class="card"><h3>${h}</h3><p class="m">${p}</p></div>`).join('')}</div></section>
+  <section class="ls" id="tst"><h2>${t.tstT}</h2><div class="g3">${t.tst.map(([q, r]) => `<figure class="card"><blockquote>“${q}”</blockquote><figcaption class="m">${r}</figcaption></figure>`).join('')}</div></section>
+  <section class="ls"><div class="card"><h2>${t.trustT}</h2><p class="m">${t.trust}</p></div></section>
+  <section class="ls dark fin" id="fin"><h2>${t.finT}</h2><p>${t.finS}</p>${cta}</section>
+  <footer class="ft"><div class="fc">${t.foot.map(([h, ls]) => `<div><b>${h}</b>${ls.map(l => `<span>${l}</span>`).join('')}</div>`).join('')}</div><p class="m">${t.note}</p></footer>`;
 }
 function login() {
-  return nav() + `<main class="w"><div class="card" style="max-width:420px;margin:2rem auto"><h2>Đăng nhập</h2>
-  <p class="m">Bản demo: chỉ cần nhập tên, dữ liệu lưu trong trình duyệt của bạn.</p>
-  <div class="row"><input type="text" id="nm" placeholder="Tên của bạn"></div><div id="e" class="err"></div>
-  <button data-a="login">Vào Home</button></div></main>`;
+  const t = L[lang()];
+  return nav() + `<main class="w"><div class="card" style="max-width:420px;margin:2rem auto"><h2>${t.login}</h2>
+  <p class="m">${t.loginSub}</p>
+  <div class="row"><input type="text" id="nm" placeholder="${t.namePh}"></div><div id="e" class="err"></div>
+  <button data-a="login">${t.enter}</button></div></main>`;
 }
 function home() {
   if (!user()) return login();
@@ -95,6 +169,7 @@ function results(id, tab = 'sum') {
 
 let tab = 'sum';
 function render() {
+  document.documentElement.lang = lang();
   const [, r, id] = (location.hash.slice(1).split('?')[0] || '/').split('/');
   const prev = location.hash.includes('preview=1');
   app.innerHTML = !r ? landing() : r === 'home' ? home() : r === 'login' ? login() : r === 'edit' ? (user() ? editor(id) : login()) :
@@ -114,6 +189,7 @@ app.addEventListener('input', e => {
   });
   if (f === 'type') render();
 });
+app.addEventListener('change', e => { if (e.target.id === 'lang') { localStorage.setItem(LK, e.target.value); render(); } });
 app.addEventListener('submit', e => {
   e.preventDefault();
   const id = location.hash.split('/')[2].split('?')[0];
@@ -130,7 +206,7 @@ app.addEventListener('click', e => {
   if (a === 'loginpage') go('/login');
   if (a === 'nav') go(b.dataset.h);
   if (a === 'logout') { localStorage.removeItem('ms_user'); go('/'); render(); }
-  if (a === 'login') { const v = document.getElementById('nm').value.trim(); if (!v) return document.getElementById('e').textContent = 'Nhập tên để tiếp tục.'; localStorage.setItem('ms_user', v); go('/home'); render(); }
+  if (a === 'login') { const v = document.getElementById('nm').value.trim(); if (!v) return document.getElementById('e').textContent = L[lang()].need; localStorage.setItem('ms_user', v); go('/home'); render(); }
   if (a === 'tpl') add(make(b.dataset.k));
   if (a === 'idea') {
     const v = document.getElementById('idea').value.trim(), l = v.toLowerCase();
@@ -141,6 +217,8 @@ app.addEventListener('click', e => {
   if (a === 'delq') { update(id, s => s.questions = s.questions.filter(q => q.id !== b.dataset.q)); render(); }
   if (a === 'publish') { update(id, s => s.status = 'open'); go('/publish/' + id); }
   if (a === 'copy') { const i = document.getElementById('lk'); i.select(); navigator.clipboard?.writeText(i.value); b.textContent = 'Đã sao chép'; }
+  if (a === 'uc') { const y = scrollY; uc = +b.dataset.i; render(); scrollTo(0, y); }
+  if (a === 'sc') document.getElementById(b.dataset.t)?.scrollIntoView({ behavior: 'smooth' });
   if (a === 'tab') { tab = b.dataset.t; render(); }
   if (a === 'csv') {
     const s = find(id), q = x => '"' + String(x).replace(/"/g, '""') + '"';
