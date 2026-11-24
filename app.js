@@ -14,6 +14,21 @@ const lang = () => (localStorage.getItem(LK) === 'en' ? 'en' : 'vi');
 let uc = 0;
 const L = {
 vi: {
+  tabHome: 'Trang chủ', tabMulti: 'Phân tích đa khảo sát', upg: 'Nâng cấp', mk: 'Tạo khảo sát', upgNote: 'Bản demo: chưa có gói trả phí.',
+  sdFor: 'Được tạo cho bạn', sdSur: 'Khảo sát', sdFold: 'Thư mục', sdHint: 'Tạo một thư mục để sắp xếp các khảo sát của bạn.', folderQ: 'Tên thư mục mới',
+  hFor: 'Các cuộc khảo sát được thiết kế dành riêng cho bạn', hH: 'Bắt đầu chỉ trong vài phút với các khảo sát về mức độ gắn kết của nhân viên.',
+  hc: [['Đánh giá tâm trạng và mức căng thẳng của đội nhóm', 'Cho bạn cái nhìn tổng quan về tinh thần làm việc hiện tại và những yếu tố đang gây căng thẳng.'], ['Đo cảm giác thuộc về và hòa nhập', 'Cho thấy nỗ lực hòa nhập có hiệu quả không, và nhóm nào đang cảm thấy ít được hòa nhập hơn.'], ['Tìm hiểu điều gì giữ chân nhân viên', 'Biết điều gì khiến mọi người ở lại và điều gì khiến họ tìm cơ hội khác, trước khi họ nghỉ việc.']],
+  review: 'Xem xét và xuất bản', mine: 'Tạo khảo sát của riêng tôi',
+  linkT: 'Hãy liên kết các khảo sát của bạn lại với nhau.', linkP: 'Chương trình nối các khảo sát liên quan để bạn thấy xu hướng theo thời gian thay vì so sánh từng kết quả một. Có sẵn trên gói nâng cao.',
+  progL: 'Chương trình phản hồi sự kiện', progH: 'Đo mức hài lòng của người tham dự và thấy hiệu quả đầu tư cho sự kiện tốt dần theo thời gian.', progN: 'Gồm 2 khảo sát', more: 'Tìm hiểu thêm',
+  progD: 'Gộp khảo sát đăng ký và khảo sát sau sự kiện vào một chương trình để so sánh qua nhiều lần tổ chức. Phần này chỉ để minh họa, chưa dùng được trong bản demo.',
+  sH: 'Hãy biến câu hỏi của bạn thành hiểu biết sâu sắc.', mIdea: 'Bắt đầu từ một ý tưởng', mTpl: 'Bắt đầu với một mẫu', mScr: 'Bắt đầu từ đầu',
+  ideaPh: 'Mô tả điều bạn muốn tìm hiểu để bắt đầu.', paste: 'Hoặc dán bản nháp khảo sát của bạn vào đây', aiNote: 'Phần gợi ý chỉ là mô phỏng theo từ khóa, hãy xem lại trước khi dùng.',
+  tag1: 'Mọi thứ bắt đầu bằng một phỏng đoán.', tag2: 'Điều khác biệt nằm ở hành động tiếp theo của bạn.',
+  myS: 'Khảo sát của tôi', emptyS: 'Chưa có khảo sát nào. Hãy tạo khảo sát đầu tiên ở phía trên.', open: 'Mở', draft: 'Nháp', resp: 'phản hồi', edit: 'Sửa', analyze: 'Phân tích kết quả', del: 'Xóa',
+  multiT: 'Phân tích đa khảo sát', multiP: 'So sánh nhanh số phản hồi giữa các khảo sát của bạn.', total: 'Tổng', colS: 'Khảo sát', colSt: 'Trạng thái', colR: 'Phản hồi', logoutB: 'Đăng xuất',
+  oLogin: 'Đăng nhập bằng', oSignup: 'Đăng ký bằng', oChoose: 'Chọn tài khoản', oCont: 'Tiếp tục tới', oOther: 'Sử dụng một tài khoản khác',
+  oNote: 'Đây là màn hình mô phỏng của bản demo: các tài khoản ở trên là tài khoản mẫu, không cần mật khẩu và không có dữ liệu nào được gửi đi.', oEmail: 'Email của bạn', oGo: 'Tiếp tục', oBack: 'Quay lại',
   regB: 'Đăng ký', aTitleS: 'Tạo tài khoản', aTitleL: 'Đăng nhập', aHaveQ: 'Bạn đã có tài khoản chưa?', aNoQ: 'Chưa có tài khoản?',
   aEmailS: 'Đăng ký bằng email', aEmailL: 'Đăng nhập bằng email', next: 'Tiếp theo', emailBad: 'Nhập địa chỉ email hợp lệ.',
   terms: 'Bằng cách đăng ký, bạn đồng ý với các điều khoản sau:', tos: 'Điều khoản sử dụng', and: 'và', priv: 'Thông báo về quyền riêng tư',
@@ -59,6 +74,21 @@ vi: {
   note: 'Nội dung, số liệu, đánh giá và nhân vật trên trang này là hư cấu, chỉ để minh họa.'
 },
 en: {
+  tabHome: 'Home', tabMulti: 'Multi-survey analysis', upg: 'Upgrade', mk: 'Create survey', upgNote: 'Demo only: there are no paid plans yet.',
+  sdFor: 'Made for you', sdSur: 'Surveys', sdFold: 'Folders', sdHint: 'Create a folder to organize your surveys.', folderQ: 'New folder name',
+  hFor: 'Surveys designed just for you', hH: 'Get started in minutes with employee engagement surveys.',
+  hc: [['Gauge team mood and stress levels', 'Get an overview of current morale and the specific things causing stress right now.'], ['Measure belonging and inclusion', 'See whether inclusion efforts are working, and which groups feel less included than others.'], ['Learn what keeps employees here', 'Find out what makes people stay and what pushes them to look elsewhere, before they leave.']],
+  review: 'Review and publish', mine: 'Create my own survey',
+  linkT: 'Connect the dots across your surveys.', linkP: 'Programs link related surveys so you can see trends over time instead of comparing results one by one. Available on advanced plans.',
+  progL: 'Event feedback program', progH: 'Measure attendee satisfaction and see event investment pay off more and more over time.', progN: 'Includes 2 surveys', more: 'Learn more',
+  progD: 'Combine a sign-up survey and a post-event survey into one program to compare across editions. This section is illustration only and not available in the demo.',
+  sH: 'Turn your questions into insights.', mIdea: 'Start from an idea', mTpl: 'Start with a template', mScr: 'Start from scratch',
+  ideaPh: 'Describe what you want to learn to get started.', paste: 'Or paste your survey draft here', aiNote: 'Suggestions are a keyword-based simulation. Please review before using.',
+  tag1: 'Everything starts with a guess.', tag2: 'What makes the difference is what you do next.',
+  myS: 'My surveys', emptyS: 'No surveys yet. Create your first one above.', open: 'Open', draft: 'Draft', resp: 'responses', edit: 'Edit', analyze: 'Analyze results', del: 'Delete',
+  multiT: 'Multi-survey analysis', multiP: 'Quickly compare response counts across your surveys.', total: 'Total', colS: 'Survey', colSt: 'Status', colR: 'Responses', logoutB: 'Log out',
+  oLogin: 'Log in with', oSignup: 'Sign up with', oChoose: 'Choose an account', oCont: 'Continue to', oOther: 'Use another account',
+  oNote: 'This is a simulated screen for the demo: the accounts above are samples, no password is needed and no data is sent anywhere.', oEmail: 'Your email', oGo: 'Continue', oBack: 'Back',
   regB: 'Sign up', aTitleS: 'Create your account', aTitleL: 'Log in', aHaveQ: 'Already have an account?', aNoQ: 'New here?',
   aEmailS: 'Sign up with email', aEmailL: 'Log in with email', next: 'Next', emailBad: 'Enter a valid email address.',
   terms: 'By signing up, you agree to the following:', tos: 'Terms of use', and: 'and', priv: 'Privacy notice',
@@ -113,6 +143,18 @@ const TPL = {
     ['single', 'Bạn đánh giá dịch vụ của chúng tôi thế nào?', ['Rất tốt', 'Tốt', 'Tạm được', 'Chưa tốt']],
     ['single', 'Bạn có giới thiệu chúng tôi cho người khác không?', ['Chắc chắn', 'Có thể', 'Không']],
     ['text', 'Góp ý thêm của bạn?', []]]],
+  stress: ['Khảo sát tâm trạng và mức căng thẳng', [
+    ['single', 'Mức căng thẳng của bạn trong tuần qua?', ['Rất thấp', 'Thấp', 'Trung bình', 'Cao']],
+    ['multi', 'Điều gì gây căng thẳng nhiều nhất?', ['Khối lượng công việc', 'Thời hạn gấp', 'Giao tiếp trong nhóm', 'Áp lực cá nhân']],
+    ['text', 'Chúng tôi có thể giúp gì để bạn bớt căng thẳng?', []]]],
+  incl: ['Khảo sát cảm giác thuộc về và hòa nhập', [
+    ['single', 'Bạn thấy mình được chào đón trong nhóm ở mức nào?', ['Rất chào đón', 'Khá chào đón', 'Trung lập', 'Chưa chào đón']],
+    ['single', 'Bạn có cảm thấy được tôn trọng khác biệt của mình không?', ['Luôn luôn', 'Thường xuyên', 'Thỉnh thoảng', 'Hiếm khi']],
+    ['text', 'Điều gì giúp nhóm hòa nhập hơn?', []]]],
+  ret: ['Khảo sát điều gì giữ chân nhân viên', [
+    ['single', 'Bạn có dự định gắn bó thêm 12 tháng nữa không?', ['Chắc chắn', 'Có thể', 'Chưa chắc', 'Không']],
+    ['multi', 'Điều gì khiến bạn muốn ở lại?', ['Lương thưởng', 'Đồng nghiệp', 'Cơ hội phát triển', 'Cân bằng công việc']],
+    ['text', 'Điều gì có thể khiến bạn tìm cơ hội khác?', []]]],
   trong: ['Khảo sát mới', [['single', 'Câu hỏi 1', ['Lựa chọn A', 'Lựa chọn B']]]]
 };
 function make(key, title) {
@@ -124,7 +166,13 @@ function add(s) { const d = load(); d.surveys.unshift(s); save(d); go('/edit/' +
 
 const globe = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>';
 const langSel = () => `<label class="gl">${globe}<select id="lang" aria-label="Language"><option value="vi"${lang() === 'vi' ? ' selected' : ''}>Tiếng Việt</option><option value="en"${lang() === 'en' ? ' selected' : ''}>English</option></select></label>`;
-const nav = () => { const t = L[lang()]; return `<nav><b class="logo" data-a="home"><i></i>MiniSurvey</b>${langSel()}${user() ? `<span class="m">${esc(user())}</span><button class="g" data-a="logout">${t.logout}</button>` : `<button data-a="loginpage">${t.login}</button>`}</nav>`; };
+const ini = () => (user() || '?').trim().split(/[\s@.]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const bell = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 17V11a6 6 0 0112 0v6l1.5 2h-15zM10 21h4"/></svg>';
+const help = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-1 .7-1.5 1.2-1.5 2.5M12 17v.5"/></svg>';
+const nav = (act) => { const t = L[lang()]; return `<header class="ab"><b class="logo" data-a="home"><i></i>MiniSurvey</b>
+  <a class="tn ${act === 'home' || act === 'surveys' ? 'on' : ''}" href="javascript:void(0)" data-a="home">${t.tabHome}</a><a class="tn ${act === 'multi' ? 'on' : ''}" href="javascript:void(0)" data-a="multi">${t.tabMulti}</a>
+  <div class="ar">${langSel()}<button class="gold" data-a="upgrade">${t.upg}</button><button class="ol2" data-a="surveys">${t.mk}</button><span class="ib2">${bell}</span><span class="ib2">${help}</span>
+  <div class="dd r"><span class="avt" tabindex="0">${esc(ini())}</span><div class="dm2"><button data-a="logout">${t.logoutB}</button></div></div></div></header>`; };
 const steps = (n, id) => `<div class="steps">${['Thiết kế', 'Đăng khảo sát', 'Phân tích kết quả'].map((t, i) =>
   `<span class="${i === n ? 'on' : ''}">${i + 1}. ${t}</span>`).join('')}</div>`;
 
@@ -193,15 +241,53 @@ function onboard(step) {
   return shell(langSel(), `<div class="ob"><section class="oc"><small class="pg">1/2</small><h1>${t.ob1T}</h1><h2>${t.ob1Q}</h2>
   ${['work', 'edu', 'me'].map((k, i) => `<button class="op" data-a="pick" data-p="${k}">${svgI(k)}${t.ob1[i]}</button>`).join('')}</section><div class="il">${ill1}</div></div>`);
 }
+const folders = () => { try { return JSON.parse(localStorage.getItem('ms_folders') || '[]'); } catch { return []; } };
+const side = (act) => { const t = L[lang()], f = folders(); return `<aside class="sd"><a class="si2 ${act === 'home' ? 'on' : ''}" href="javascript:void(0)" data-a="home">${svgI('me')}${t.sdFor}</a><a class="si2 ${act === 'surveys' ? 'on' : ''}" href="javascript:void(0)" data-a="surveys"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h6"/></svg>${t.sdSur}</a>
+  <div class="fh"><b>${t.sdFold}</b><button class="pl" data-a="folder" aria-label="${t.sdFold}">+</button></div>${f.length ? f.map(x => `<div class="fd">${esc(x)}</div>`).join('') : `<p class="m">${t.sdHint}</p>`}</aside>`; };
+const cardIcons = [
+  '<svg width="72" height="60" viewBox="0 0 72 60" aria-hidden="true"><rect x="2" y="16" width="52" height="24" rx="3" fill="#005BAA"/><path d="M8 10h56M8 50h56" stroke="#9aa7b5" stroke-width="3" stroke-linecap="round"/><circle cx="8" cy="28" r="4" fill="#fff"/></svg>',
+  '<svg width="72" height="60" viewBox="0 0 72 60" aria-hidden="true"><rect x="22" y="6" width="9" height="46" fill="#005BAA"/><rect x="8" y="34" width="9" height="18" fill="#c9d2dc"/><rect x="36" y="26" width="9" height="26" fill="#c9d2dc"/><rect x="50" y="22" width="9" height="30" fill="#F36F21"/><path d="M4 52h60" stroke="#1C2A3A" stroke-width="2"/></svg>',
+  '<svg width="72" height="60" viewBox="0 0 72 60" aria-hidden="true"><path d="M8 46l14-14 12 10 20-26" fill="none" stroke="#1C2A3A" stroke-width="2.5"/><circle cx="8" cy="46" r="5" fill="#fff" stroke="#1C2A3A" stroke-width="2"/><circle cx="22" cy="32" r="5" fill="#fff" stroke="#1C2A3A" stroke-width="2"/><circle cx="54" cy="16" r="7" fill="#F36F21"/></svg>'
+];
 function home() {
   if (!user()) return login();
-  const list = load().surveys;
-  return nav() + `<main class="w"><h1>Xin chào, ${esc(user())}</h1>
-  <section class="card"><h2>Bắt đầu từ ý tưởng</h2><p class="m">Mô tả điều bạn muốn tìm hiểu. Đây là bản mô phỏng bằng từ khóa, chưa gọi AI thật.</p>
-  <div class="row"><input type="text" id="idea" placeholder="Ví dụ: mức gắn kết của nhân viên"><button data-a="idea">Tạo bản nháp</button></div>
-  <div class="row"><button class="g" data-a="tpl" data-k="nv">Dùng mẫu nhân viên</button><button class="g" data-a="tpl" data-k="kh">Dùng mẫu khách hàng</button><button class="g" data-a="tpl" data-k="trong">Tạo từ đầu</button></div></section>
-  <h2>Khảo sát của tôi</h2><div class="card">${list.length ? list.map(s => `<div class="item"><div><b>${esc(s.title)}</b> <span class="tag ${s.status === 'open' ? '' : 'd'}">${s.status === 'open' ? 'Mở' : 'Nháp'}</span><div class="m">${s.responses.length} phản hồi</div></div>
-  <div class="row"><button class="g" data-a="nav" data-h="/edit/${s.id}">Sửa</button><button class="g" data-a="nav" data-h="/results/${s.id}">Phân tích kết quả</button><button class="x" data-a="del" data-id="${s.id}">Xóa</button></div></div>`).join('') : '<p class="m">Chưa có khảo sát nào. Hãy tạo khảo sát đầu tiên ở phía trên.</p>'}</div></main>`;
+  const t = L[lang()];
+  return nav('home') + `<div class="app">${side('home')}<main class="mc"><small class="eyb2">${svgI('me')} ${t.hFor}</small><h1 class="big">${t.hH}</h1>
+  <div class="g3c">${t.hc.map(([h, p], i) => `<div class="mcard">${cardIcons[i]}<h3>${h}</h3><p>${p}</p><button class="ol3" data-a="tpl" data-k="${['stress', 'incl', 'ret'][i]}">${t.review}</button></div>`).join('')}</div>
+  <div class="ctr"><button class="ol3" data-a="surveys">${t.mine} →</button></div>
+  <h2 class="h2b">${t.linkT}</h2><p>${t.linkP}</p>
+  <details class="pc"><summary><div><small>${t.progL}</small><h3>${t.progH}</h3><p class="m">${t.progN}</p><span class="mr">${t.more} ▾</span></div><div class="tiles"><i></i><i></i></div></summary><p class="m">${t.progD}</p></details></main></div>`;
+}
+let sm = 'idea';
+function surveys() {
+  if (!user()) return login();
+  const t = L[lang()], list = load().surveys;
+  const mb = (k, ic, l, a = 'mode') => `<button class="mb ${sm === k && a === 'mode' ? 'on' : ''}" data-a="${a}" data-m="${k}" ${a === 'tpl' ? 'data-k="trong"' : ''}>${svgI(ic)}${l}</button>`;
+  const body = sm === 'tpl'
+    ? `<div class="tpls">${['nv', 'kh', 'stress', 'incl', 'ret'].map(k => `<button class="op" data-a="tpl" data-k="${k}">${svgI('edu')}${TPL[k][0]}</button>`).join('')}</div>`
+    : `<div class="ibox"><textarea id="idea" placeholder="${t.ideaPh}"></textarea><div class="ifoot"><span class="chip" data-a="focus">💡 ${t.paste}</span><button class="go" data-a="idea" aria-label="${t.start}">→</button></div></div><p class="m ctr">${t.aiNote}</p>`;
+  return nav('surveys') + `<div class="app">${side('surveys')}<main class="mc"><h1 class="big c">${t.sH}</h1>
+  <div class="modes">${mb('idea', 'pen', t.mIdea)}${mb('tpl', 'edu', t.mTpl)}${mb('scr', 'work', t.mScr, 'tpl')}</div>${body}
+  <div class="ill3"><svg viewBox="0 0 220 170" aria-hidden="true"><rect x="20" y="10" width="100" height="100" rx="6" fill="none" stroke="#9aa7b5" stroke-width="3" stroke-dasharray="7 6"/><circle cx="92" cy="64" r="28" fill="#fff" stroke="#1C2A3A" stroke-width="4"/><path d="M104 88l30 40 18-10-22-40z" fill="#DCEBFA" stroke="#1C2A3A" stroke-width="2"/><path d="M118 130h70l-12 24h-52z" fill="#1C2A3A"/></svg><h2>${t.tag1}</h2><p class="m">${t.tag2}</p></div>
+  <h2 class="h2b">${t.myS}</h2><div class="card">${list.length ? list.map(s => `<div class="item"><div><b>${esc(s.title)}</b> <span class="tag ${s.status === 'open' ? '' : 'd'}">${s.status === 'open' ? t.open : t.draft}</span><div class="m">${s.responses.length} ${t.resp}</div></div>
+  <div class="row"><button class="g" data-a="nav" data-h="/edit/${s.id}">${t.edit}</button><button class="g" data-a="nav" data-h="/results/${s.id}">${t.analyze}</button><button class="x" data-a="del" data-id="${s.id}">${t.del}</button></div></div>`).join('') : `<p class="m">${t.emptyS}</p>`}</div></main></div>`;
+}
+function multi() {
+  if (!user()) return login();
+  const t = L[lang()], list = load().surveys, tot = list.reduce((n, s) => n + s.responses.length, 0);
+  return nav('multi') + `<main class="w"><h1>${t.multiT}</h1><p class="m">${t.multiP}</p><div class="card"><table><tr><th>${t.colS}</th><th>${t.colSt}</th><th>${t.colR}</th></tr>
+  ${list.map(s => `<tr><td>${esc(s.title)}</td><td>${s.status === 'open' ? t.open : t.draft}</td><td>${s.responses.length}</td></tr>`).join('')}<tr><th>${t.total}</th><th></th><th>${tot}</th></tr></table></div></main>`;
+}
+function oauth(id) {
+  const [k, m] = (id || 'google-signup').split('-'), t = L[lang()], nm = k === 'apple' ? 'Apple' : 'Google';
+  const acc = [['Minh Anh', 'minhanh@example.com'], ['Quốc Bảo', 'quocbao@example.com']];
+  return `<div class="gw"><div class="gc"><div class="gh"><i class="si">${nm[0]}</i>${m === 'login' ? t.oLogin : t.oSignup} ${nm}<span class="dmb">DEMO</span></div>
+  <div class="gb"><div><i class="lg2"></i><h1>${t.oChoose}</h1><p>${t.oCont} <b>MiniSurvey</b></p></div>
+  <div class="gr">${acc.map(([n, e]) => `<button class="ac2" data-a="pickacct" data-n="${n}" data-k="${k}" data-m="${m}"><span class="av2">${n[0]}</span><span><b>${n}</b><small>${e}</small></span></button>`).join('')}
+  <button class="ac2" data-a="other"><span class="av2">+</span><b>${t.oOther}</b></button>
+  <div id="oth" hidden><input type="email" id="oe" placeholder="${t.oEmail}"><div id="e" class="err"></div><button class="bt" data-a="otherGo" data-k="${k}" data-m="${m}">${t.oGo}</button></div>
+  <p class="tm" style="text-align:left">${t.oNote}</p></div></div></div>
+  <div class="gf">${langSel()}<button class="bk" data-a="${m === 'login' ? 'loginpage' : 'signuppage'}">‹ ${t.oBack}</button></div></div>`;
 }
 function editor(id) {
   const s = find(id); if (!s) return home();
@@ -249,7 +335,7 @@ function render() {
   document.documentElement.lang = lang();
   const [, r, id] = (location.hash.slice(1).split('?')[0] || '/').split('/');
   const prev = location.hash.includes('preview=1');
-  app.innerHTML = !r ? landing() : r === 'home' ? home() : r === 'login' ? login() : r === 'signup' ? authPage('signup') : r === 'consent' ? consent(id) : r === 'onboard' ? onboard(id) : r === 'edit' ? (user() ? editor(id) : login()) :
+  app.innerHTML = !r ? landing() : r === 'home' ? home() : r === 'login' ? login() : r === 'signup' ? authPage('signup') : r === 'consent' ? consent(id) : r === 'onboard' ? onboard(id) : r === 'surveys' ? surveys() : r === 'multi' ? multi() : r === 'oauth' ? oauth(id) : r === 'edit' ? (user() ? editor(id) : login()) :
     r === 'publish' ? (user() ? collect(id) : login()) : r === 'results' ? (user() ? results(id, tab) : login()) : r === 's' ? respond(id, prev) : landing();
 }
 addEventListener('hashchange', () => { tab = 'sum'; render(); });
@@ -307,15 +393,24 @@ app.addEventListener('click', e => {
     if (!/^\S+@\S+\.\S+$/.test(v)) return document.getElementById('e').textContent = L[lang()].emailBad;
     localStorage.setItem('ms_user', v); go(b.dataset.m === 'signup' ? '/onboard/1' : '/home'); render();
   }
-  if (a === 'social') {
-    if (b.dataset.m === 'signup') go('/consent/' + b.dataset.k);
-    else { localStorage.setItem('ms_user', b.dataset.k === 'apple' ? 'Apple demo' : 'Google demo'); go('/home'); render(); }
-  }
-  if (a === 'consent') { localStorage.setItem('ms_user', b.dataset.k === 'apple' ? 'Apple demo' : 'Google demo'); go('/onboard/1'); render(); }
+  if (a === 'social') go('/oauth/' + b.dataset.k + '-' + b.dataset.m);
+  if (a === 'consent') go('/onboard/1');
   if (a === 'pick') { localStorage.setItem('ms_purpose', b.dataset.p); go('/onboard/2'); }
   if (a === 'back') go('/onboard/1');
   if (a === 'explore') go('/home');
   if (a === 'build') add(make('trong'));
+  if (a === 'surveys') go('/surveys');
+  if (a === 'multi') go('/multi');
+  if (a === 'upgrade') alert(L[lang()].upgNote);
+  if (a === 'focus') document.getElementById('idea')?.focus();
+  if (a === 'mode') { sm = b.dataset.m; render(); }
+  if (a === 'folder') { const n = prompt(L[lang()].folderQ); if (n && n.trim()) { localStorage.setItem('ms_folders', JSON.stringify([...folders(), n.trim()])); render(); } }
+  if (a === 'other') { const o = document.getElementById('oth'); o.hidden = !o.hidden; if (!o.hidden) document.getElementById('oe').focus(); }
+  if (a === 'pickacct' || a === 'otherGo') {
+    let name = b.dataset.n;
+    if (a === 'otherGo') { const v = document.getElementById('oe').value.trim(); if (!/^\S+@\S+\.\S+$/.test(v)) return document.getElementById('e').textContent = L[lang()].emailBad; name = v; }
+    localStorage.setItem('ms_user', name); go(b.dataset.m === 'signup' ? '/consent/' + b.dataset.k : '/home'); render();
+  }
   if (a === 'sc') document.getElementById(b.dataset.t)?.scrollIntoView({ behavior: 'smooth' });
   if (a === 'tab') { tab = b.dataset.t; render(); }
   if (a === 'csv') {
