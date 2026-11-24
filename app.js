@@ -14,6 +14,16 @@ const lang = () => (localStorage.getItem(LK) === 'en' ? 'en' : 'vi');
 let uc = 0;
 const L = {
 vi: {
+  regB: 'Đăng ký', aTitleS: 'Tạo tài khoản', aTitleL: 'Đăng nhập', aHaveQ: 'Bạn đã có tài khoản chưa?', aNoQ: 'Chưa có tài khoản?',
+  aEmailS: 'Đăng ký bằng email', aEmailL: 'Đăng nhập bằng email', next: 'Tiếp theo', emailBad: 'Nhập địa chỉ email hợp lệ.',
+  terms: 'Bằng cách đăng ký, bạn đồng ý với các điều khoản sau:', tos: 'Điều khoản sử dụng', and: 'và', priv: 'Thông báo về quyền riêng tư',
+  newsT: 'Bạn cũng đồng ý nhận tin tức sản phẩm và chương trình khuyến mãi qua email, và có thể hủy bất cứ lúc nào.', or: 'HOẶC',
+  gS: 'Đăng ký bằng Google', aS: 'Đăng ký bằng Apple', gL: 'Đăng nhập bằng Google', aL: 'Đăng nhập bằng Apple',
+  demoNote: 'Bản demo: không kết nối thật tới Google hay Apple và không cần mật khẩu.',
+  cTitle: 'Đăng ký bằng', cSub: 'Vui lòng xem lại điều khoản của chúng tôi để tiếp tục.', c1: 'Bạn đồng ý với',
+  c2: 'Bạn đồng ý nhận tin tức sản phẩm và các chương trình khuyến mãi đặc biệt qua email. Bạn có thể hủy bất cứ lúc nào.',
+  ob1T: 'Hãy cá nhân hóa trải nghiệm của bạn', ob1Q: 'Hôm nay bạn đến đây vì lý do gì?', ob1: ['Công việc', 'Giáo dục', 'Cá nhân'],
+  ob2Q: 'Bạn muốn làm gì tiếp theo?', ob2: ['Tôi đang tìm hiểu những điều khả thi.', 'Tôi đã sẵn sàng xây dựng một cuộc khảo sát.'], back: 'Trở lại',
   login: 'Đăng nhập', logout: 'Đăng xuất', signup: 'Đăng ký miễn phí', start: 'Bắt đầu miễn phí', toHome: 'Vào Home', demoBtn: 'Xem demo',
   need: 'Nhập tên để tiếp tục.', loginSub: 'Bản demo: chỉ cần nhập tên, dữ liệu lưu trong trình duyệt của bạn.', namePh: 'Tên của bạn', enter: 'Vào Home',
   mProd: 'Sản phẩm', mSol: 'Giải pháp', mRes: 'Tài nguyên',
@@ -49,6 +59,16 @@ vi: {
   note: 'Nội dung, số liệu, đánh giá và nhân vật trên trang này là hư cấu, chỉ để minh họa.'
 },
 en: {
+  regB: 'Sign up', aTitleS: 'Create your account', aTitleL: 'Log in', aHaveQ: 'Already have an account?', aNoQ: 'New here?',
+  aEmailS: 'Sign up with email', aEmailL: 'Log in with email', next: 'Next', emailBad: 'Enter a valid email address.',
+  terms: 'By signing up, you agree to the following:', tos: 'Terms of use', and: 'and', priv: 'Privacy notice',
+  newsT: 'You also agree to receive product news and special offers by email, and you can unsubscribe at any time.', or: 'OR',
+  gS: 'Sign up with Google', aS: 'Sign up with Apple', gL: 'Log in with Google', aL: 'Log in with Apple',
+  demoNote: 'Demo only: no real connection to Google or Apple, and no password is needed.',
+  cTitle: 'Sign up with', cSub: 'Please review our terms to continue.', c1: 'You agree to the',
+  c2: 'You agree to receive product news and special offers by email. You can unsubscribe at any time.',
+  ob1T: 'Let’s personalize your experience', ob1Q: 'What brings you here today?', ob1: ['Work', 'Education', 'Personal'],
+  ob2Q: 'What would you like to do next?', ob2: ['I’m exploring what’s possible.', 'I’m ready to build a survey.'], back: 'Back',
   login: 'Log in', logout: 'Log out', signup: 'Sign up free', start: 'Get started free', toHome: 'Go to Home', demoBtn: 'Watch the demo',
   need: 'Enter your name to continue.', loginSub: 'Demo only: just enter a name. Data stays in your own browser.', namePh: 'Your name', enter: 'Go to Home',
   mProd: 'Products', mSol: 'Solutions', mRes: 'Resources',
@@ -133,12 +153,45 @@ function landing() {
   <section class="rew" id="fin"><h2>${t.rewT}</h2><p>${t.rewS}</p><div class="row" style="justify-content:center">${btn(t.rewB1)}<button class="ol" data-a="begin">${t.rewB2}</button></div></section>
   <footer class="ft"><div class="fc">${t.foot.map(([h, ls]) => `<div><b>${h}</b>${ls.map(l => `<span>${l}</span>`).join('')}</div>`).join('')}</div><p>${t.note}</p></footer>`;
 }
-function login() {
+const ic = {
+  work: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 13h18"/>',
+  edu: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+  me: '<path d="M12 20s-8-5-8-11a4.5 4.5 0 018-2.5A4.5 4.5 0 0120 9c0 6-8 11-8 11z"/>',
+  pen: '<path d="M4 20l4-1 11-11-3-3L5 16z"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>'
+};
+const svgI = k => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ic[k]}</svg>`;
+const ill1 = `<svg viewBox="0 0 420 340" aria-hidden="true"><circle cx="190" cy="205" r="125" fill="#E8F1FB"/><g transform="rotate(-4 240 160)"><rect x="120" y="60" width="240" height="200" rx="14" fill="#0A2A57"/><rect x="136" y="170" width="40" height="40" rx="8" fill="#005BAA"/><rect x="186" y="170" width="40" height="40" rx="8" fill="#F36F21"/><rect x="236" y="160" width="60" height="60" rx="10" fill="#fff"/><rect x="250" y="178" width="32" height="24" rx="4" fill="none" stroke="#F36F21" stroke-width="3"/><rect x="306" y="170" width="40" height="40" rx="8" fill="#005BAA"/></g><path d="M250 100l-6-24M276 104l12-20M300 116l20-8" stroke="#F36F21" stroke-width="5" stroke-linecap="round"/></svg>`;
+const ill2 = `<svg viewBox="0 0 420 340" aria-hidden="true"><rect x="150" y="30" width="140" height="90" rx="24" fill="#DCEBFA"/><rect x="230" y="130" width="160" height="90" rx="24" fill="#F36F21"/><circle cx="310" cy="172" r="22" fill="#fff"/><rect x="302" y="192" width="16" height="12" rx="3" fill="#fff"/><path d="M342 138l10-14M360 150l16-8" stroke="#FFD9BF" stroke-width="5" stroke-linecap="round"/><rect x="130" y="120" width="42" height="180" rx="21" fill="#005BAA"/><rect x="190" y="170" width="42" height="130" rx="21" fill="#FFD9BF"/><rect x="100" y="290" width="200" height="22" rx="8" fill="#0A2A57"/></svg>`;
+const shell = (right, body) => `<div class="au"><div class="ah"><b class="logo" data-a="landing"><i></i>MiniSurvey</b><div class="tr">${right}</div></div>${body}</div>`;
+function authPage(mode) {
+  const t = L[lang()], S = mode === 'signup';
+  const right = `${langSel()}<span class="hq">${S ? t.aHaveQ : t.aNoQ}</span><button class="ol2" data-a="${S ? 'loginpage' : 'signuppage'}">${S ? t.login : t.regB}</button>`;
+  return shell(right, `<main class="ac"><h1>${S ? t.aTitleS : t.aTitleL}</h1>
+  <label for="em" class="lb">${S ? t.aEmailS : t.aEmailL}</label><input type="email" id="em" placeholder="name@company.com" autocomplete="email"><div id="e" class="err" role="alert"></div>
+  <button class="bt" id="nx" data-a="next" data-m="${mode}" disabled>${t.next}</button>
+  ${S ? `<p class="tm">${t.terms} <span class="ln">${t.tos}</span> ${t.and} <span class="ln">${t.priv}</span>. ${t.newsT}</p>` : ''}
+  <div class="or"><span>${t.or}</span></div>
+  <button class="sb" data-a="social" data-k="google" data-m="${mode}"><i class="si">G</i>${S ? t.gS : t.gL}</button>
+  <button class="sb" data-a="social" data-k="apple" data-m="${mode}"><i class="si">A</i>${S ? t.aS : t.aL}</button>
+  <p class="tm">${t.demoNote}</p></main>`);
+}
+function login() { return authPage('login'); }
+function consent(k) {
   const t = L[lang()];
-  return nav() + `<main class="w"><div class="card" style="max-width:420px;margin:2rem auto"><h2>${t.login}</h2>
-  <p class="m">${t.loginSub}</p>
-  <div class="row"><input type="text" id="nm" placeholder="${t.namePh}"></div><div id="e" class="err"></div>
-  <button data-a="login">${t.enter}</button></div></main>`;
+  return shell(langSel(), `<main class="ac cs"><h1>${t.cTitle} ${k === 'apple' ? 'Apple' : 'Google'}</h1><p>${t.cSub}</p>
+  <label class="cb"><input type="checkbox" id="c1"><span>${t.c1} <span class="ln">${t.tos}</span> ${t.and} <span class="ln">${t.priv}</span>.</span></label>
+  <label class="cb"><input type="checkbox"><span>${t.c2}</span></label>
+  <button class="bt" id="cn" data-a="consent" data-k="${k}" disabled>${t.next}</button></main>`);
+}
+function onboard(step) {
+  const t = L[lang()];
+  if (!user()) return authPage('login');
+  if (step === '2') return shell(langSel(), `<div class="ob"><section class="oc"><small class="pg">2/2</small><h2>${t.ob2Q}</h2>
+  <button class="op" data-a="explore">${svgI('globe')}${t.ob2[0]}</button><button class="op" data-a="build">${svgI('pen')}${t.ob2[1]}</button>
+  <button class="bk" data-a="back">‹ ${t.back}</button></section><div class="il">${ill2}</div></div>`);
+  return shell(langSel(), `<div class="ob"><section class="oc"><small class="pg">1/2</small><h1>${t.ob1T}</h1><h2>${t.ob1Q}</h2>
+  ${['work', 'edu', 'me'].map((k, i) => `<button class="op" data-a="pick" data-p="${k}">${svgI(k)}${t.ob1[i]}</button>`).join('')}</section><div class="il">${ill1}</div></div>`);
 }
 function home() {
   if (!user()) return login();
@@ -196,13 +249,15 @@ function render() {
   document.documentElement.lang = lang();
   const [, r, id] = (location.hash.slice(1).split('?')[0] || '/').split('/');
   const prev = location.hash.includes('preview=1');
-  app.innerHTML = !r ? landing() : r === 'home' ? home() : r === 'login' ? login() : r === 'edit' ? (user() ? editor(id) : login()) :
+  app.innerHTML = !r ? landing() : r === 'home' ? home() : r === 'login' ? login() : r === 'signup' ? authPage('signup') : r === 'consent' ? consent(id) : r === 'onboard' ? onboard(id) : r === 'edit' ? (user() ? editor(id) : login()) :
     r === 'publish' ? (user() ? collect(id) : login()) : r === 'results' ? (user() ? results(id, tab) : login()) : r === 's' ? respond(id, prev) : landing();
 }
 addEventListener('hashchange', () => { tab = 'sum'; render(); });
 
 app.addEventListener('input', e => {
-  const t = e.target, f = t.dataset.f; if (!f) return;
+  const t = e.target, f = t.dataset.f;
+  if (t.id === 'em') { document.getElementById('nx').disabled = !/^\S+@\S+\.\S+$/.test(t.value.trim()); document.getElementById('e').textContent = ''; return; }
+  if (!f) return;
   const id = location.hash.split('/')[2];
   update(id, s => {
     if (f === 'title') return s.title = t.value;
@@ -213,7 +268,9 @@ app.addEventListener('input', e => {
   });
   if (f === 'type') render();
 });
-app.addEventListener('change', e => { if (e.target.id === 'lang') { localStorage.setItem(LK, e.target.value); render(); } });
+app.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'em') document.getElementById('nx').click(); });
+app.addEventListener('change', e => {
+  if (e.target.id === 'c1') document.getElementById('cn').disabled = !e.target.checked; if (e.target.id === 'lang') { localStorage.setItem(LK, e.target.value); render(); } });
 app.addEventListener('submit', e => {
   e.preventDefault();
   const id = location.hash.split('/')[2].split('?')[0];
@@ -230,7 +287,6 @@ app.addEventListener('click', e => {
   if (a === 'loginpage') go('/login');
   if (a === 'nav') go(b.dataset.h);
   if (a === 'logout') { localStorage.removeItem('ms_user'); go('/'); render(); }
-  if (a === 'login') { const v = document.getElementById('nm').value.trim(); if (!v) return document.getElementById('e').textContent = L[lang()].need; localStorage.setItem('ms_user', v); go('/home'); render(); }
   if (a === 'tpl') add(make(b.dataset.k));
   if (a === 'idea') {
     const v = document.getElementById('idea').value.trim(), l = v.toLowerCase();
@@ -242,8 +298,24 @@ app.addEventListener('click', e => {
   if (a === 'publish') { update(id, s => s.status = 'open'); go('/publish/' + id); }
   if (a === 'copy') { const i = document.getElementById('lk'); i.select(); navigator.clipboard?.writeText(i.value); b.textContent = 'Đã sao chép'; }
   if (a === 'uc') { const y = scrollY; uc = +b.dataset.i; render(); scrollTo(0, y); }
-  if (a === 'begin') go(user() ? '/home' : '/login');
+  if (a === 'begin') go(user() ? '/home' : '/signup');
   if (a === 'ucgo') { uc = +b.dataset.i; render(); document.getElementById('uc')?.scrollIntoView({ behavior: 'smooth' }); }
+  if (a === 'landing') go('/');
+  if (a === 'signuppage') go('/signup');
+  if (a === 'next') {
+    const v = document.getElementById('em').value.trim();
+    if (!/^\S+@\S+\.\S+$/.test(v)) return document.getElementById('e').textContent = L[lang()].emailBad;
+    localStorage.setItem('ms_user', v); go(b.dataset.m === 'signup' ? '/onboard/1' : '/home'); render();
+  }
+  if (a === 'social') {
+    if (b.dataset.m === 'signup') go('/consent/' + b.dataset.k);
+    else { localStorage.setItem('ms_user', b.dataset.k === 'apple' ? 'Apple demo' : 'Google demo'); go('/home'); render(); }
+  }
+  if (a === 'consent') { localStorage.setItem('ms_user', b.dataset.k === 'apple' ? 'Apple demo' : 'Google demo'); go('/onboard/1'); render(); }
+  if (a === 'pick') { localStorage.setItem('ms_purpose', b.dataset.p); go('/onboard/2'); }
+  if (a === 'back') go('/onboard/1');
+  if (a === 'explore') go('/home');
+  if (a === 'build') add(make('trong'));
   if (a === 'sc') document.getElementById(b.dataset.t)?.scrollIntoView({ behavior: 'smooth' });
   if (a === 'tab') { tab = b.dataset.t; render(); }
   if (a === 'csv') {
